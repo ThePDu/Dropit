@@ -3,18 +3,31 @@ import { useLocation } from 'react-router-dom'
 import API from '../api.js'
 import ProductCard from '../components/ProductCard.jsx'
 
-const CATS  = ['All','snacks','drinks','instant','dairy','stationery','medicines','hygiene']
-const LABEL = { All:'All', snacks:'Snacks', drinks:'Drinks', instant:'Instant Food', dairy:'Dairy', stationery:'Stationery', medicines:'Medicines', hygiene:'Hygiene' }
+const CATS = ['All','snacks','drinks','instant','dairy','stationery','medicines','hygiene','fruits','veg','meat','sweet','frozen','cleaning','paan']
+
+const LABEL = {
+  All: 'All', paan: 'Paan', fruits: 'Fruits', veg: 'Vegetables', dairy: 'Dairy',
+  snacks: 'Snacks', drinks: 'Drinks', instant: 'Instant Food', sweet: 'Sweets',
+  frozen: 'Ice Cream', meat: 'Meat', stationery: 'Stationery', medicines: 'Medicines',
+  hygiene: 'Hygiene', cleaning: 'Cleaning'
+}
 
 const ICONS = {
-  All: (color) => (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>),
-  snacks: (color) => (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>),
-  drinks: (color) => (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="2" x2="8" y2="6"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><path d="M5 8l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2L19 8z"/><path d="M5 8h14"/></svg>),
-  instant: (color) => (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/><path d="M18 2l4 4-4 4"/><path d="M22 2h-4"/></svg>),
-  dairy: (color) => (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2h8l2 6H6L8 2z"/><path d="M6 8v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"/><path d="M12 12v4"/><path d="M10 14h4"/></svg>),
-  stationery: (color) => (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="2" x2="22" y2="6"/><path d="M7.5 20.5 19 9l-4-4L3.5 16.5 2 22z"/></svg>),
-  medicines: (color) => (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>),
-  hygiene: (color) => (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>),
+  All: (color) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>),
+  snacks: (color) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>),
+  drinks: (color) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="2" x2="8" y2="6"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><path d="M5 8l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2L19 8z"/><path d="M5 8h14"/></svg>),
+  instant: (color) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/><path d="M18 2l4 4-4 4"/><path d="M22 2h-4"/></svg>),
+  dairy: (color) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2h8l2 6H6L8 2z"/><path d="M6 8v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"/><path d="M12 12v4"/><path d="M10 14h4"/></svg>),
+  stationery: (color) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="2" x2="22" y2="6"/><path d="M7.5 20.5 19 9l-4-4L3.5 16.5 2 22z"/></svg>),
+  medicines: (color) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>),
+  hygiene: (color) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>),
+  fruits: (color) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v4a3 3 0 0 0 3 3h4"/><path d="M12 2C7 2 3 6 3 11c0 6 9 11 9 11s9-5 9-11c0-5-4-9-9-9z"/></svg>),
+  veg: (color) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22C6 22 4 16 4 10V2h4v8"/><path d="M20 10V2h-4v8C16 16 14 22 12 22"/></svg>),
+  meat: (color) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M8 8s-3-2-5 3c-2 4 1 7 4 9 4 2 9 0 12-4 2-3-1-6-3-6-2 0-3-2-2-4 2-5-2-4-4-2-1 2-2 4-2 4z"/></svg>),
+  sweet: (color) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>),
+  frozen: (color) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22l-4-9h8z"/><path d="M8 13C8 8.6 10 6 12 6s4 2.6 4 7z"/></svg>),
+  cleaning: (color) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M6 4h12v12H6z"/><path d="M16 16v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4"/></svg>),
+  paan: (color) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 4 13V8h5a7 7 0 0 1 7 7v5h-5z"/><path d="M11 20v-7"/></svg>)
 }
 
 function Skeleton() {
@@ -56,17 +69,25 @@ export default function Home() {
 
   return (
     <div style={{ minHeight: 'calc(100vh - 64px)', background: '#f8f8f8' }}>
+      <style>{`
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+        @keyframes slideIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+      `}</style>
 
-      {/* TOP CATEGORY BAR */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #e0e0e0', position: 'sticky', top: 72, zIndex: 100, marginTop: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', padding: '0 16px' }}>
+      {/* TOP CATEGORY BAR (ZEPTO STYLE) */}
+      <div className="hide-scroll" style={{ background: '#fff', borderBottom: '1px solid #eee', position: 'sticky', top: 72, zIndex: 100, overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <style>{`.hide-scroll::-webkit-scrollbar { display: none; }`}</style>
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0 16px', gap: 24, minWidth: 'max-content' }}>
           {CATS.map(c => {
             const active = activeCat === c
-            const color = active ? '#7c3aed' : '#555'
+            const color = active ? '#0c831f' : '#666'
             return (
-              <div key={c} onClick={() => setActiveCat(c)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '12px 20px', cursor: 'pointer', borderBottom: active ? '3px solid #7c3aed' : '3px solid transparent', transition: 'all 0.15s', flexShrink: 0 }}>
-                <div style={{ marginBottom: 4 }}>{ICONS[c](color)}</div>
-                <span style={{ fontSize: 12, fontWeight: active ? 700 : 500, color, whiteSpace: 'nowrap' }}>{LABEL[c]}</span>
+              <div key={c} onClick={() => setActiveCat(c)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', padding: '10px 0', borderBottom: active ? '3px solid #0c831f' : '3px solid transparent', flexShrink: 0, transition: 'all 0.15s' }}>
+                <div style={{ marginBottom: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {ICONS[c](color)}
+                </div>
+                <span style={{ fontSize: 13, fontWeight: active ? 700 : 500, color, whiteSpace: 'nowrap', letterSpacing: -0.2 }}>{LABEL[c]}</span>
               </div>
             )
           })}
@@ -162,75 +183,132 @@ export default function Home() {
           </div>
         </div>
 
-        {/* OFFER STRIP */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 20 }}>
-          {[
-            { icon:'⚡', title:'Flash deals', sub:'Upto 30% off', badge:'HOT', bc:'#ff6d00' },
-            { icon:'🎒', title:'Student special', sub:'Under ₹30', badge:'NEW', bc:'#7c4dff' },
-            { icon:'🌙', title:'Midnight snacks', sub:'Always available', badge:'', bc:'' },
-          ].map(o => (
-            <div key={o.title} style={{ background: '#fff', border: '1px solid #e0e0e0', borderRadius: 12, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', transition: 'all 0.15s' }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor='#0c831f'; e.currentTarget.style.background='#f0fff4' }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor='#e0e0e0'; e.currentTarget.style.background='#fff' }}>
-              <span style={{ fontSize: 24 }}>{o.icon}</span>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#1a1a1a' }}>{o.title}</div>
-                <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{o.sub}</div>
+        {/* ── ZEPTO STYLE OFFER CARDS ── */}
+        <div style={{ background: '#0f0c29', borderRadius: 24, padding: 24, marginBottom: 32, boxShadow: '0 12px 32px rgba(0,0,0,0.15)', border: '1px solid rgba(255,255,255,0.05)' }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap: 16 }}>
+            {[
+              { icon:'⚡', title:'Flash deals', sub:'Upto 30% off', badge:'HOT', badgeColor:'#FF3333', bg:'linear-gradient(135deg, #FF512F 0%, #DD2476 100%)', glowColor:'rgba(221, 36, 118, 0.4)', iconGlow:'0 0 20px rgba(255, 255, 255, 0.5)' },
+              { icon:'🎒', title:'Student special', sub:'Under ₹30', badge:'NEW', badgeColor:'#00E676', bg:'linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%)', glowColor:'rgba(142, 45, 226, 0.4)', iconGlow:'0 0 20px rgba(255, 255, 255, 0.5)' },
+              { icon:'🍌', title:'Midnight snacks', sub:'Always available', badge:'', badgeColor:'', bg:'linear-gradient(135deg, #00C6FF 0%, #0072FF 100%)', glowColor:'rgba(0, 198, 255, 0.4)', iconGlow:'0 0 20px rgba(255, 255, 255, 0.5)' },
+            ].map(o => (
+              <div key={o.title}
+                style={{ 
+                  background: o.bg, 
+                  borderRadius: 20, 
+                  padding: '22px 20px', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 16, 
+                  cursor: 'pointer', 
+                  transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                  boxShadow: `0 8px 24px ${o.glowColor}, inset 0 1px 1px rgba(255,255,255,0.4), inset 0 0 0 1px rgba(255,255,255,0.1)`, 
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform='translateY(-6px)'; e.currentTarget.style.boxShadow=`0 16px 32px ${o.glowColor}, inset 0 1px 1px rgba(255,255,255,0.6), inset 0 0 0 1px rgba(255,255,255,0.2)` }}
+                onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow=`0 8px 24px ${o.glowColor}, inset 0 1px 1px rgba(255,255,255,0.4), inset 0 0 0 1px rgba(255,255,255,0.1)` }}>
+                
+                {/* Glassmorphism Shine Overlay */}
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%)', pointerEvents: 'none' }} />
+
+                {/* Glowing Icon Treatment */}
+                <div style={{ 
+                  width: 56, 
+                  height: 56, 
+                  background: 'rgba(255,255,255,0.15)', 
+                  backdropFilter: 'blur(10px)',
+                  borderRadius: '50%', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  fontSize: 28, 
+                  boxShadow: o.iconGlow, 
+                  border: '1px solid rgba(255,255,255,0.4)',
+                  position: 'relative',
+                  zIndex: 1
+                }}>
+                  {o.icon}
+                </div>
+
+                <div style={{ flex: 1, position: 'relative', zIndex: 1 }}>
+                  <div style={{ fontSize: 17, fontWeight: 900, color: '#ffffff', letterSpacing: -0.3, textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>{o.title}</div>
+                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.9)', marginTop: 4, fontWeight: 600 }}>{o.sub}</div>
+                </div>
+
+                {/* Rounded Pill Style Badge */}
+                {o.badge && (
+                  <div style={{ 
+                    background: o.badgeColor, 
+                    color: o.badgeColor === '#00E676' ? '#07301c' : '#ffffff', 
+                    fontSize: 11, 
+                    fontWeight: 900, 
+                    padding: '6px 14px', 
+                    borderRadius: 20, 
+                    boxShadow: `0 4px 12px rgba(0,0,0,0.3)`,
+                    position: 'absolute',
+                    top: 18,
+                    right: 18,
+                    letterSpacing: 0.5,
+                    zIndex: 1
+                  }}>
+                    {o.badge}
+                  </div>
+                )}
               </div>
-              {o.badge && <div style={{ background: o.bc, color: '#fff', fontSize: 10, fontWeight: 800, padding: '3px 9px', borderRadius: 5 }}>{o.badge}</div>}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* PRODUCTS HEADING */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14 }}>
           <div>
-            <h2 style={{ fontSize: 18, fontWeight: 800, letterSpacing: -0.5, color: '#1a1a1a' }}>
+            <h2 style={{ fontSize:18, fontWeight:800, letterSpacing:-0.5, color:'#1a1a1a' }}>
               {searchQuery ? `Results for "${searchQuery}"` : LABEL[activeCat]}
             </h2>
-            <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{products.length} items</div>
+            <div style={{ fontSize:12, color:'#888', marginTop:2 }}>{products.length} items</div>
           </div>
           {activeCat !== 'All' && (
-            <button onClick={() => setActiveCat('All')} style={{ background: 'transparent', color: '#0c831f', fontSize: 13, fontWeight: 700, border: 'none', cursor: 'pointer' }}>See all →</button>
+            <button onClick={() => setActiveCat('All')} style={{ background:'#f0fff4', color:'#0c831f', fontSize:13, fontWeight:700, border:'1px solid #0c831f', padding:'6px 14px', borderRadius:8, cursor:'pointer' }}>See all →</button>
           )}
         </div>
 
         {/* PRODUCT GRID */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(170px,1fr))', gap: 14, paddingBottom: 24 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(170px,1fr))', gap:14, paddingBottom:24 }}>
           {loading
             ? Array(8).fill(0).map((_,i) => <Skeleton key={i} />)
             : products.length === 0
               ? <div style={{ gridColumn:'1/-1', textAlign:'center', padding:'60px 0' }}>
-                  <div style={{ fontSize: 52, marginBottom: 12 }}>🔍</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: '#1a1a1a' }}>No products found</div>
+                  <div style={{ fontSize:52, marginBottom:12 }}>🔍</div>
+                  <div style={{ fontSize:16, fontWeight:700, color:'#1a1a1a' }}>No products found</div>
                 </div>
               : products.map(p => <ProductCard key={p._id} product={p} />)
           }
         </div>
 
         {/* BANNERS */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 28 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14, marginBottom:28 }}>
           {[
-            { bg:'linear-gradient(135deg,#e8f5e9,#c8e6c9)', title:'Free delivery', sub:'On orders above ₹199', icon:'🚀', color:'#1b5e20' },
-            { bg:'linear-gradient(135deg,#e8f0fe,#c5d8fb)', title:'Always fresh', sub:'Stocked by local shops', icon:'✨', color:'#1a237e' },
+            { bg:'linear-gradient(135deg,#0c831f,#064e12)', title:'Free delivery', sub:'On orders above ₹199', icon:'🚀', color:'#fff', subColor:'rgba(255,255,255,0.7)' },
+            { bg:'linear-gradient(135deg,#1565c0,#0d47a1)', title:'Always fresh', sub:'Stocked by local shops', icon:'✨', color:'#fff', subColor:'rgba(255,255,255,0.7)' },
           ].map(b => (
-            <div key={b.title} style={{ background: b.bg, borderRadius: 14, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid #e0e0e0' }}>
+            <div key={b.title} style={{ background:b.bg, borderRadius:16, padding:'22px 28px', display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer', transition:'all 0.2s', boxShadow:'0 4px 16px rgba(0,0,0,0.1)' }}
+              onMouseEnter={e => { e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 8px 24px rgba(0,0,0,0.15)' }}
+              onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)' }}>
               <div>
-                <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: b.color }}>{b.title}</div>
-                <div style={{ fontSize: 13, color: '#555' }}>{b.sub}</div>
+                <div style={{ fontSize:18, fontWeight:800, marginBottom:4, color:b.color }}>{b.title}</div>
+                <div style={{ fontSize:13, color:b.subColor }}>{b.sub}</div>
               </div>
-              <span style={{ fontSize: 44 }}>{b.icon}</span>
+              <span style={{ fontSize:48 }}>{b.icon}</span>
             </div>
           ))}
         </div>
-
       </div>
 
       {/* FOOTER */}
-      <footer style={{ background: '#fff', borderTop: '1px solid #e0e0e0' }}>
-        <div style={{ padding: '28px 16px', borderBottom: '1px solid #e0e0e0' }}>
-          <h3 style={{ fontSize: 16, fontWeight: 800, color: '#1a1a1a', marginBottom: 16 }}>Popular Searches</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <footer style={{ background:'#fff', borderTop:'1px solid #e0e0e0' }}>
+        <div style={{ padding:'28px 16px', borderBottom:'1px solid #e0e0e0' }}>
+          <h3 style={{ fontSize:16, fontWeight:800, color:'#1a1a1a', marginBottom:16 }}>Popular Searches</h3>
+          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
             {[
               { label:'Products', items:['Maggi','Lays','Kurkure','Bisleri','Amul Butter','Dark Fantasy','Red Bull','Frooti','Glucose-D','Dettol','Colgate','Top Ramen'] },
               { label:'Brands', items:['Amul','Lays','Maggi','Kurkure','Bisleri','Dettol','Colgate','Red Bull','Sunfeast','Parle','Dabur','Vicks'] },
@@ -241,7 +319,7 @@ export default function Home() {
                 <span style={{ fontSize:13, color:'#555' }}>:&nbsp;
                   {row.items.map((item,i) => (
                     <span key={item}>
-                      <span style={{ cursor:'pointer', color:'#555' }} onMouseEnter={e=>e.target.style.color='#f97316'} onMouseLeave={e=>e.target.style.color='#555'}>{item}</span>
+                      <span style={{ cursor:'pointer', color:'#555' }} onMouseEnter={e=>e.target.style.color='#0c831f'} onMouseLeave={e=>e.target.style.color='#555'}>{item}</span>
                       {i < row.items.length-1 && <span style={{ color:'#ccc', margin:'0 6px' }}>|</span>}
                     </span>
                   ))}
@@ -251,50 +329,38 @@ export default function Home() {
           </div>
         </div>
 
-        <div style={{ padding: '28px 16px', borderBottom: '1px solid #e0e0e0' }}>
-          <h3 style={{ fontSize: 16, fontWeight: 800, color: '#1a1a1a', marginBottom: 16 }}>Categories</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '12px 0' }}>
+        <div style={{ padding:'28px 16px', borderBottom:'1px solid #e0e0e0' }}>
+          <h3 style={{ fontSize:16, fontWeight:800, color:'#1a1a1a', marginBottom:16 }}>Categories</h3>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:'12px 0' }}>
             {['Snacks & Munchies','Cold Drinks & Juices','Instant Food','Sweet Cravings','Dairy & Eggs','Stationery','Medicines & Health','Hygiene & Grooming','Breakfast & Sauces','Biscuits & Cookies','Energy Drinks','Water & Beverages','Chips & Crisps','Noodles & Pasta','Personal Care'].map(cat => (
-              <div key={cat} style={{ fontSize:13, color:'#333', cursor:'pointer', padding:'3px 0' }} onMouseEnter={e=>e.target.style.color='#f97316'} onMouseLeave={e=>e.target.style.color='#333'}>{cat}</div>
+              <div key={cat} style={{ fontSize:13, color:'#333', cursor:'pointer', padding:'3px 0' }} onMouseEnter={e=>e.target.style.color='#0c831f'} onMouseLeave={e=>e.target.style.color='#333'}>{cat}</div>
             ))}
           </div>
         </div>
 
-        <div style={{ padding: '32px 16px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 32 }}>
+        <div style={{ padding:'32px 16px', display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:32 }}>
           <div>
             <div style={{ marginBottom:16 }}>
-              <span style={{ fontSize:28, fontWeight:900, letterSpacing:-1, background:'linear-gradient(135deg,#f97316,#ec4899)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>Drop</span>
+              <span style={{ fontSize:28, fontWeight:900, letterSpacing:-1, color:'#0c831f' }}>Drop</span>
               <span style={{ fontSize:28, fontWeight:900, letterSpacing:-1, color:'#1a1a1a' }}>it</span>
-            </div>
-            <div style={{ display:'flex', gap:10, marginBottom:16 }}>
-              {[
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>,
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.4 5.4 3.9 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>,
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>,
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-              ].map((icon,i) => (
-                <div key={i} style={{ width:34, height:34, border:'1px solid #e0e0e0', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer' }}
-                  onMouseEnter={e=>{e.currentTarget.style.borderColor='#f97316';e.currentTarget.style.background='#fff5f0'}}
-                  onMouseLeave={e=>{e.currentTarget.style.borderColor='#e0e0e0';e.currentTarget.style.background='#fff'}}>{icon}</div>
-              ))}
             </div>
             <div style={{ fontSize:11, color:'#aaa', lineHeight:1.8 }}>© DropIt — Sawantwadi<br/>CSE Mini Project 2024</div>
           </div>
           <div>
             {['Home','Delivery Areas','Careers','Customer Support','Press','About DropIt'].map(link => (
-              <div key={link} style={{ fontSize:13, color:'#555', marginBottom:12, cursor:'pointer' }} onMouseEnter={e=>e.target.style.color='#f97316'} onMouseLeave={e=>e.target.style.color='#555'}>{link}</div>
+              <div key={link} style={{ fontSize:13, color:'#555', marginBottom:12, cursor:'pointer' }} onMouseEnter={e=>e.target.style.color='#0c831f'} onMouseLeave={e=>e.target.style.color='#555'}>{link}</div>
             ))}
           </div>
           <div>
             {['Privacy Policy','Terms of Use','Refund Policy','Sell on DropIt','Deliver with DropIt','Partner with us'].map(link => (
-              <div key={link} style={{ fontSize:13, color:'#555', marginBottom:12, cursor:'pointer' }} onMouseEnter={e=>e.target.style.color='#f97316'} onMouseLeave={e=>e.target.style.color='#555'}>{link}</div>
+              <div key={link} style={{ fontSize:13, color:'#555', marginBottom:12, cursor:'pointer' }} onMouseEnter={e=>e.target.style.color='#0c831f'} onMouseLeave={e=>e.target.style.color='#555'}>{link}</div>
             ))}
           </div>
           <div>
             <div style={{ fontSize:14, fontWeight:800, color:'#1a1a1a', marginBottom:14 }}>Download App</div>
             {['Get it on Play Store','Get it on App Store'].map(btn => (
               <div key={btn} style={{ display:'flex', alignItems:'center', gap:10, border:'1px solid #e0e0e0', borderRadius:10, padding:'10px 14px', marginBottom:10, cursor:'pointer' }}
-                onMouseEnter={e=>{e.currentTarget.style.borderColor='#f97316';e.currentTarget.style.background='#fff5f0'}}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor='#0c831f';e.currentTarget.style.background='#f0fff4'}}
                 onMouseLeave={e=>{e.currentTarget.style.borderColor='#e0e0e0';e.currentTarget.style.background='#fff'}}>
                 <span style={{ fontSize:12, fontWeight:600, color:'#1a1a1a' }}>{btn}</span>
               </div>
