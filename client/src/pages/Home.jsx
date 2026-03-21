@@ -76,30 +76,89 @@ export default function Home() {
       <div style={{ padding: '0 16px 0' }}>
 
         {/* HERO */}
-        <div style={{ background: 'linear-gradient(135deg,#f0fff4 0%,#e8f5e9 60%,#f0fff4 100%)', padding: '28px 28px', marginBottom: 16, borderRadius: 16, border: '1px solid #d4edda', display: 'flex', alignItems: 'center', justifyContent: 'space-between', overflow: 'hidden', position: 'relative' }}>
-          <div style={{ position: 'absolute', right: 80, top: -30, width: 220, height: 220, background: 'radial-gradient(circle,rgba(12,131,31,0.08),transparent 70%)', borderRadius: '50%' }} />
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'rgba(12,131,31,0.1)', border: '1px solid rgba(12,131,31,0.25)', color: '#0c831f', padding: '5px 13px', borderRadius: 20, fontSize: 11, fontWeight: 700, marginBottom: 14 }}>
-              <span style={{ width: 7, height: 7, background: '#0c831f', borderRadius: '50%', display: 'inline-block', animation: 'pulse 1.5s infinite' }} />
-              Live · Delivering now in Sawantwadi
+        <div style={{ 
+          background: 'linear-gradient(135deg, #FFDE4D 0%, #FFB22C 100%)', 
+          padding: '36px 36px', 
+          marginBottom: 24, 
+          borderRadius: 24, 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between', 
+          overflow: 'hidden', 
+          position: 'relative', 
+          boxShadow: '0 12px 24px rgba(255, 178, 44, 0.3)',
+        }}>
+          {/* Animated Background Elements */}
+          <div style={{ position: 'absolute', right: '-5%', top: '-20%', width: 300, height: 300, background: 'radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%)', borderRadius: '50%', animation: 'pulse 4s infinite alternate' }} />
+          <div style={{ position: 'absolute', left: '40%', bottom: '-30%', width: 250, height: 250, background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)', borderRadius: '50%', animation: 'pulse 3s infinite alternate-reverse' }} />
+          
+          <div style={{ position: 'relative', zIndex: 1, maxWidth: '65%' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: '#fff', border: 'none', color: '#e65100', padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 800, marginBottom: 18, textTransform: 'uppercase', letterSpacing: 0.5, boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}>
+              <span style={{ width: 8, height: 8, background: '#ff3b30', borderRadius: '50%', display: 'inline-block', animation: 'pulseRing 1.5s infinite' }} />
+              Live · Delivering to Sawantwadi
             </div>
-            <h1 style={{ fontSize: 32, fontWeight: 900, letterSpacing: -1.5, lineHeight: 1.1, marginBottom: 8, color: '#1a1a1a' }}>
-              Your hostel hunger<br />ends <span style={{ color: '#0c831f' }}>here</span>
+            
+            <h1 style={{ fontSize: 44, fontWeight: 900, letterSpacing: -1.5, lineHeight: 1.1, marginBottom: 16, color: '#1a1a1a' }}>
+              Hostel hunger ends<br />
+              <div style={{ display: 'inline-block', marginTop: 8 }}>
+                in <span style={{ background: '#1a1a1a', color: '#FFDE4D', padding: '0 12px', borderRadius: 12, display: 'inline-block', transform: 'rotate(-2deg)', boxShadow: '0 6px 15px rgba(0,0,0,0.1)' }}>10 minutes</span>
+              </div>
             </h1>
-            <p style={{ color: '#555', fontSize: 14, marginBottom: 22 }}>Snacks, drinks & essentials — fast delivery to your room</p>
-            <div style={{ display: 'flex', gap: 28 }}>
-              {[['⚡ 10 min','Avg delivery'],[`🛍️ ${products.length||'25'}+`,'Products'],['₹0','Delivery fee*']].map(([num,label]) => (
-                <div key={label}>
-                  <div style={{ fontSize: 18, fontWeight: 900, color: '#0c831f' }}>{num}</div>
-                  <div style={{ fontSize: 10, color: '#888', fontWeight: 600, marginTop: 2 }}>{label}</div>
+            
+            <p style={{ color: '#4a4a4a', fontSize: 16, fontWeight: 600, marginBottom: 26, maxWidth: '85%' }}>
+              Snacks, daily essentials, and midnight cravings. Instant delivery to your room.
+            </p>
+            
+            <div style={{ display: 'flex', gap: 16 }}>
+              {[['⚡ fast','Delivery'],[`🛒 ${products.length||25}+`,'Products'],['🛵 ₹0','Delivery fee']].map(([num,label]) => (
+                <div key={label} style={{ background: 'rgba(255,255,255,0.4)', backdropFilter: 'blur(10px)', padding: '10px 16px', borderRadius: 14, border: '1px solid rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{ fontSize: 22, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{num.split(' ')[0]}</div>
+                  <div>
+                    <div style={{ fontSize: 16, fontWeight: 900, color: '#1a1a1a' }}>{num.split(' ')[1] || num.split(' ')[0]}</div>
+                    <div style={{ fontSize: 11, color: '#4a4a4a', fontWeight: 700, marginTop: 1 }}>{label}</div>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
-          <div style={{ width: 190, height: 115, background: '#0c831f', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 6, position: 'relative', zIndex: 1, boxShadow: '0 4px 20px rgba(12,131,31,0.3)', flexShrink: 0 }}>
-            <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: 1 }}>DROPIT</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>Fast delivery</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.65)' }}>Sawantwadi</div>
+          
+          <div style={{ width: 220, height: 220, position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            {/* Premium Image Card "Popup" */}
+            <div style={{ 
+              width: 170, 
+              height: 190, 
+              background: 'url("https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80") center/cover', 
+              position: 'absolute', 
+              bottom: 10, 
+              borderRadius: 22, 
+              boxShadow: '0 24px 40px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(255,255,255,0.2)', 
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center', 
+              flexDirection: 'column', 
+              animation: 'bounceSlow 3s infinite ease-in-out',
+              overflow: 'hidden'
+            }}>
+              {/* Premium dark gradient overlay for text readability */}
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.9) 100%)' }} />
+              
+              {/* Internal Content */}
+              <div style={{ position: 'relative', zIndex: 1, marginTop: 'auto', paddingBottom: 22, textAlign: 'center' }}>
+                <div style={{ fontSize: 28, fontWeight: 900, color: '#FFDE4D', letterSpacing: -1, textShadow: '0 2px 6px rgba(0,0,0,0.6)' }}>DropIt</div>
+                <div style={{ fontSize: 12, fontWeight: 800, color: '#fff', opacity: 0.95, marginTop: 4, letterSpacing: 0.5, textTransform: 'uppercase' }}>Fresh & Fast</div>
+              </div>
+            </div>
+            
+            {/* Groceries Popping out */}
+            <div style={{ fontSize: 44, position: 'absolute', top: 5, left: -5, animation: 'float 2.5s infinite ease-in-out', filter: 'drop-shadow(0 8px 10px rgba(0,0,0,0.3))', transform: 'rotate(-15deg)' }}>🥦</div>
+            <div style={{ fontSize: 50, position: 'absolute', top: -15, left: 60, animation: 'float 3s infinite ease-in-out', animationDelay: '0.2s', filter: 'drop-shadow(0 8px 10px rgba(0,0,0,0.3))' }}>🍞</div>
+            <div style={{ fontSize: 42, position: 'absolute', top: 15, right: -5, animation: 'float 2.8s infinite ease-in-out', animationDelay: '0.4s', filter: 'drop-shadow(0 8px 10px rgba(0,0,0,0.3))', transform: 'rotate(20deg)' }}>🍎</div>
+            <div style={{ fontSize: 36, position: 'absolute', top: 60, left: -20, animation: 'float 2.4s infinite ease-in-out', animationDelay: '0.1s', filter: 'drop-shadow(0 8px 10px rgba(0,0,0,0.3))', transform: 'rotate(-10deg)' }}>🥛</div>
+            <div style={{ fontSize: 40, position: 'absolute', top: 65, right: -15, animation: 'float 2.7s infinite ease-in-out', animationDelay: '0.5s', filter: 'drop-shadow(0 8px 10px rgba(0,0,0,0.3))', transform: 'rotate(15deg)' }}>🍫</div>
+            
+            {/* Sparkles */}
+            <div style={{ fontSize: 24, position: 'absolute', top: -5, left: -15, animation: 'pulse 1.5s infinite', color: '#ffeb3b', textShadow: '0 0 8px rgba(255,235,59,0.9)' }}>✨</div>
+            <div style={{ fontSize: 28, position: 'absolute', top: 40, right: -25, animation: 'pulse 2s infinite', color: '#ffeb3b', textShadow: '0 0 8px rgba(255,235,59,0.9)', animationDelay: '0.3s' }}>✨</div>
           </div>
         </div>
 
