@@ -20,7 +20,8 @@ export default function Navbar() {
 
   return (
     <nav style={{
-      background: '#ffffff',
+      background: 'rgba(255, 255, 255, 0.85)',
+      backdropFilter: 'blur(16px)',
       borderBottom: '1px solid #e0e0e0',
       height: 72,
       display: 'flex',
@@ -139,27 +140,18 @@ export default function Navbar() {
         )}
 
         {/* CART */}
-        <div onClick={() => navigate('/cart')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', gap: 4 }}>
-          <div style={{ position: 'relative' }}>
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="9" cy="21" r="1"/>
-              <circle cx="20" cy="21" r="1"/>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-            </svg>
-            {cartCount > 0 && (
-              <div style={{
-                position: 'absolute', top: -7, right: -9,
-                background: '#f97316', color: '#fff',
-                width: 20, height: 20, borderRadius: '50%',
-                fontSize: 11, fontWeight: 900,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: '2px solid #fff',
-              }}>
-                {cartCount}
-              </div>
-            )}
-          </div>
-          <span style={{ fontSize: 11, color: '#555', fontWeight: 600 }}>Cart</span>
+        <div onClick={() => navigate('/cart')} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: 10, background: '#0c831f', color: '#fff', padding: '10px 18px', borderRadius: 12, fontWeight: 800, transition: 'all 0.15s', boxShadow: '0 4px 12px rgba(12,131,31,0.2)' }} onMouseEnter={e => e.currentTarget.style.transform='translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform='translateY(0)'}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          {cartCount > 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+              <span style={{ fontSize: 11, lineHeight: 1, opacity: 0.9 }}>{cartCount} items</span>
+              <span style={{ fontSize: 14, lineHeight: 1, marginTop: 3 }}>₹{cartTotal}</span>
+            </div>
+          ) : (
+            <span style={{ fontSize: 14 }}>My Cart</span>
+          )}
         </div>
 
       </div>

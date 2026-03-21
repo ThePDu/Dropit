@@ -9,7 +9,13 @@ const categoryEmoji = {
   stationery:  { emoji: '✏️', bg: '#e8f5e9', color: '#2e7d32' },
   medicines:   { emoji: '💊', bg: '#e0f7fa', color: '#00695c' },
   hygiene:     { emoji: '🧴', bg: '#fff3e0', color: '#e65100' },
-  frozen:      { emoji: '🧊', bg: '#e8eaf6', color: '#283593' },
+  fruits:      { emoji: '🍎', bg: '#ffebee', color: '#c62828' },
+  veg:         { emoji: '🥦', bg: '#e8f5e9', color: '#2e7d32' },
+  meat:        { emoji: '🥩', bg: '#fce4ec', color: '#ad1457' },
+  sweet:       { emoji: '🍫', bg: '#efebe9', color: '#4e342e' },
+  frozen:      { emoji: '🍦', bg: '#e1f5fe', color: '#0277bd' },
+  cleaning:    { emoji: '🧽', bg: '#e0f7fa', color: '#00838f' },
+  paan:        { emoji: '🍃', bg: '#f1f8e9', color: '#33691e' },
 }
 
 export default function ProductCard({ product }) {
@@ -94,19 +100,21 @@ export default function ProductCard({ product }) {
           {product.stock === 0 ? null : inCart ? (
             <div
               onClick={e => e.stopPropagation()}
-              style={{ display: 'flex', alignItems: 'center', background: '#f0fff4', borderRadius: 8, overflow: 'hidden', border: '1.5px solid #0c831f' }}
+              style={{ display: 'flex', alignItems: 'center', background: '#0c831f', borderRadius: 8, overflow: 'hidden', boxShadow: '0 2px 6px rgba(12,131,31,0.2)' }}
             >
-              <button onClick={() => changeQty(product._id, -1)} style={{ width: 30, height: 30, background: '#0c831f', color: '#fff', border: 'none', fontSize: 18, fontWeight: 900, cursor: 'pointer' }}>−</button>
-              <span style={{ fontSize: 13, fontWeight: 800, minWidth: 28, textAlign: 'center', color: '#0c831f' }}>{inCart.qty}</span>
-              <button onClick={() => addToCart(product)} style={{ width: 30, height: 30, background: '#0c831f', color: '#fff', border: 'none', fontSize: 18, fontWeight: 900, cursor: 'pointer' }}>+</button>
+              <button onClick={() => changeQty(product._id, -1)} style={{ width: 28, height: 28, background: 'transparent', color: '#fff', border: 'none', fontSize: 18, fontWeight: 900, cursor: 'pointer' }}>−</button>
+              <span style={{ fontSize: 13, fontWeight: 800, minWidth: 24, textAlign: 'center', color: '#fff' }}>{inCart.qty}</span>
+              <button onClick={() => addToCart(product)} style={{ width: 28, height: 28, background: 'transparent', color: '#fff', border: 'none', fontSize: 18, fontWeight: 900, cursor: 'pointer' }}>+</button>
             </div>
           ) : (
             <button
               onClick={e => { e.stopPropagation(); addToCart(product) }}
-              style={{ width: 34, height: 34, background: '#fff', border: '1.5px solid #0c831f', borderRadius: 8, color: '#0c831f', fontSize: 22, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s', cursor: 'pointer' }}
+              style={{ padding: '6px 20px', background: '#f0fff4', border: '1px solid #0c831f', borderRadius: 8, color: '#0c831f', fontSize: 13, fontWeight: 800, transition: 'all 0.15s', cursor: 'pointer', boxShadow: '0 2px 6px rgba(12,131,31,0.1)' }}
               onMouseEnter={e => { e.currentTarget.style.background = '#0c831f'; e.currentTarget.style.color = '#fff' }}
-              onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#0c831f' }}
-            >+</button>
+              onMouseLeave={e => { e.currentTarget.style.background = '#f0fff4'; e.currentTarget.style.color = '#0c831f' }}
+            >
+              ADD
+            </button>
           )}
         </div>
       </div>
