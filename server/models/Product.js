@@ -3,13 +3,13 @@ const mongoose = require('mongoose');
 const productSchema = new mongoose.Schema({
   name:        { type: String, required: true },
   price:       { type: Number, required: true },
-  mrp:         { type: Number, required: true },
-  category:    { type: String, required: true, enum: ['snacks','drinks','instant','dairy','stationery','medicines','hygiene','frozen'] },
-  image:       { type: String, default: '' },
+  mrp:         { type: Number, default: 0 },
+  category:    { type: String, required: true },
   description: { type: String, default: '' },
   stock:       { type: Number, default: 100 },
-  badge:       { type: String, enum: ['','hot','new','deal','bestseller'], default: '' },
-  brand:       { type: String, default: '' },
+  badge:       { type: String, default: '' },
+  image:       { type: String, default: '' },
+  images:      { type: [String], default: [] },
   isActive:    { type: Boolean, default: true },
 }, { timestamps: true });
 

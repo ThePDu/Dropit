@@ -56,15 +56,20 @@ export default function Home() {
 
   return (
     <div style={{ minHeight: 'calc(100vh - 64px)', background: '#f8f8f8' }}>
+      <style>{`
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+        @keyframes slideIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+      `}</style>
 
       {/* TOP CATEGORY BAR */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #e0e0e0', position: 'sticky', top: 72, zIndex: 100, marginTop: 0 }}>
+      <div style={{ background: '#fff', borderBottom: '1px solid #e0e0e0', position: 'sticky', top: 72, zIndex: 100 }}>
         <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', padding: '0 16px' }}>
           {CATS.map(c => {
             const active = activeCat === c
-            const color = active ? '#7c3aed' : '#555'
+            const color = active ? '#0c831f' : '#555'
             return (
-              <div key={c} onClick={() => setActiveCat(c)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '12px 20px', cursor: 'pointer', borderBottom: active ? '3px solid #7c3aed' : '3px solid transparent', transition: 'all 0.15s', flexShrink: 0 }}>
+              <div key={c} onClick={() => setActiveCat(c)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '12px 20px', cursor: 'pointer', borderBottom: active ? '3px solid #0c831f' : '3px solid transparent', transition: 'all 0.15s', flexShrink: 0 }}>
                 <div style={{ marginBottom: 4 }}>{ICONS[c](color)}</div>
                 <span style={{ fontSize: 12, fontWeight: active ? 700 : 500, color, whiteSpace: 'nowrap' }}>{LABEL[c]}</span>
               </div>
@@ -75,103 +80,117 @@ export default function Home() {
 
       <div style={{ padding: '0 16px 0' }}>
 
-        {/* HERO */}
-        <div style={{ background: 'linear-gradient(135deg,#f0fff4 0%,#e8f5e9 60%,#f0fff4 100%)', padding: '28px 28px', marginBottom: 16, borderRadius: 16, border: '1px solid #d4edda', display: 'flex', alignItems: 'center', justifyContent: 'space-between', overflow: 'hidden', position: 'relative' }}>
-          <div style={{ position: 'absolute', right: 80, top: -30, width: 220, height: 220, background: 'radial-gradient(circle,rgba(12,131,31,0.08),transparent 70%)', borderRadius: '50%' }} />
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'rgba(12,131,31,0.1)', border: '1px solid rgba(12,131,31,0.25)', color: '#0c831f', padding: '5px 13px', borderRadius: 20, fontSize: 11, fontWeight: 700, marginBottom: 14 }}>
-              <span style={{ width: 7, height: 7, background: '#0c831f', borderRadius: '50%', display: 'inline-block', animation: 'pulse 1.5s infinite' }} />
-              Live · Delivering now in Sawantwadi
+        {/* ── HERO SECTION ── */}
+        <div style={{ margin:'16px 0', borderRadius:20, overflow:'hidden', position:'relative', background:'linear-gradient(135deg, #0c831f 0%, #064e12 100%)', minHeight:200 }}>
+          <div style={{ position:'absolute', top:-40, right:-40, width:220, height:220, background:'rgba(255,255,255,0.05)', borderRadius:'50%' }} />
+          <div style={{ position:'absolute', bottom:-60, left:200, width:180, height:180, background:'rgba(255,255,255,0.04)', borderRadius:'50%' }} />
+          <div style={{ position:'absolute', top:20, right:160, width:80, height:80, background:'rgba(255,255,255,0.06)', borderRadius:'50%' }} />
+          <div style={{ display:'grid', gridTemplateColumns:'1fr auto', alignItems:'center', padding:'28px 32px', position:'relative', zIndex:1 }}>
+            <div>
+              <div style={{ display:'inline-flex', alignItems:'center', gap:7, background:'rgba(255,255,255,0.15)', backdropFilter:'blur(8px)', border:'1px solid rgba(255,255,255,0.2)', color:'#fff', padding:'5px 14px', borderRadius:20, fontSize:11, fontWeight:700, marginBottom:16 }}>
+                <span style={{ width:7, height:7, background:'#4cff72', borderRadius:'50%', display:'inline-block', animation:'pulse 1.5s infinite', boxShadow:'0 0 6px #4cff72' }} />
+                Live · Delivering now in Sawantwadi
+              </div>
+              <h1 style={{ fontSize:36, fontWeight:900, letterSpacing:-1.5, lineHeight:1.1, marginBottom:10, color:'#fff' }}>
+                Delivery in <span style={{ color:'#ffd54f' }}>10 minutes</span><br/>
+                <span style={{ fontSize:28, fontWeight:700, color:'rgba(255,255,255,0.85)' }}>to your hostel room 🚀</span>
+              </h1>
+              <p style={{ color:'rgba(255,255,255,0.7)', fontSize:14, marginBottom:24, lineHeight:1.6 }}>
+                Snacks, drinks & essentials — always available, zero delivery fee
+              </p>
+              <div style={{ display:'flex', gap:0, background:'rgba(255,255,255,0.1)', backdropFilter:'blur(8px)', borderRadius:12, overflow:'hidden', border:'1px solid rgba(255,255,255,0.15)', width:'fit-content' }}>
+                {[{val:'⚡ 10 min',label:'Avg delivery'},{val:`🛍️ ${products.length||'13'}+`,label:'Products'},{val:'₹0',label:'Delivery fee'}].map((s,i)=>(
+                  <div key={s.label} style={{ padding:'12px 20px', borderRight:i<2?'1px solid rgba(255,255,255,0.15)':'none', textAlign:'center' }}>
+                    <div style={{ fontSize:16, fontWeight:900, color:'#fff', whiteSpace:'nowrap' }}>{s.val}</div>
+                    <div style={{ fontSize:10, color:'rgba(255,255,255,0.6)', fontWeight:600, marginTop:2, whiteSpace:'nowrap' }}>{s.label}</div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <h1 style={{ fontSize: 32, fontWeight: 900, letterSpacing: -1.5, lineHeight: 1.1, marginBottom: 8, color: '#1a1a1a' }}>
-              Your hostel hunger<br />ends <span style={{ color: '#0c831f' }}>here</span>
-            </h1>
-            <p style={{ color: '#555', fontSize: 14, marginBottom: 22 }}>Snacks, drinks & essentials — fast delivery to your room</p>
-            <div style={{ display: 'flex', gap: 28 }}>
-              {[['⚡ 10 min','Avg delivery'],[`🛍️ ${products.length||'25'}+`,'Products'],['₹0','Delivery fee*']].map(([num,label]) => (
-                <div key={label}>
-                  <div style={{ fontSize: 18, fontWeight: 900, color: '#0c831f' }}>{num}</div>
-                  <div style={{ fontSize: 10, color: '#888', fontWeight: 600, marginTop: 2 }}>{label}</div>
-                </div>
-              ))}
+            <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:12, marginLeft:32 }}>
+              <div style={{ background:'rgba(255,255,255,0.12)', backdropFilter:'blur(12px)', border:'1px solid rgba(255,255,255,0.2)', borderRadius:20, padding:'24px 32px', textAlign:'center', animation:'float 3s ease-in-out infinite' }}>
+                <div style={{ fontSize:32, fontWeight:900, color:'#fff', letterSpacing:2, marginBottom:4 }}>DROPIT</div>
+                <div style={{ fontSize:11, color:'rgba(255,255,255,0.7)', fontWeight:600, marginBottom:2 }}>Fast delivery</div>
+                <div style={{ fontSize:11, color:'rgba(255,255,255,0.5)' }}>Sawantwadi 📍</div>
+              </div>
+              <div style={{ background:'#ffd54f', color:'#1a1a1a', padding:'8px 20px', borderRadius:20, fontSize:12, fontWeight:800, cursor:'pointer', boxShadow:'0 4px 12px rgba(0,0,0,0.2)' }}>
+                Order Now →
+              </div>
             </div>
-          </div>
-          <div style={{ width: 190, height: 115, background: '#0c831f', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 6, position: 'relative', zIndex: 1, boxShadow: '0 4px 20px rgba(12,131,31,0.3)', flexShrink: 0 }}>
-            <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: 1 }}>DROPIT</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>Fast delivery</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.65)' }}>Sawantwadi</div>
           </div>
         </div>
 
-        {/* OFFER STRIP */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 20 }}>
+        {/* ── OFFER CARDS ── */}
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:12, marginBottom:20 }}>
           {[
-            { icon:'⚡', title:'Flash deals', sub:'Upto 30% off', badge:'HOT', bc:'#ff6d00' },
-            { icon:'🎒', title:'Student special', sub:'Under ₹30', badge:'NEW', bc:'#7c4dff' },
-            { icon:'🌙', title:'Midnight snacks', sub:'Always available', badge:'', bc:'' },
+            { icon:'⚡', title:'Flash deals', sub:'Upto 30% off', badge:'HOT', bc:'#ff6d00', bg:'linear-gradient(135deg,#fff8f0,#fff0e0)', border:'#ffd0a0' },
+            { icon:'🎒', title:'Student special', sub:'Under ₹30', badge:'NEW', bc:'#7c4dff', bg:'linear-gradient(135deg,#f5f0ff,#ede0ff)', border:'#d0b8ff' },
+            { icon:'🌙', title:'Midnight snacks', sub:'Always available', badge:'', bc:'', bg:'linear-gradient(135deg,#f0f4ff,#e8eeff)', border:'#c8d4ff' },
           ].map(o => (
-            <div key={o.title} style={{ background: '#fff', border: '1px solid #e0e0e0', borderRadius: 12, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', transition: 'all 0.15s' }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor='#0c831f'; e.currentTarget.style.background='#f0fff4' }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor='#e0e0e0'; e.currentTarget.style.background='#fff' }}>
-              <span style={{ fontSize: 24 }}>{o.icon}</span>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#1a1a1a' }}>{o.title}</div>
-                <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{o.sub}</div>
+            <div key={o.title}
+              style={{ background: o.bg, border:`1px solid ${o.border}`, borderRadius:14, padding:'16px 18px', display:'flex', alignItems:'center', gap:12, cursor:'pointer', transition:'all 0.2s' }}
+              onMouseEnter={e => { e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 6px 20px rgba(0,0,0,0.1)' }}
+              onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='none' }}>
+              <div style={{ width:44, height:44, background:'#fff', borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, boxShadow:'0 2px 8px rgba(0,0,0,0.08)' }}>{o.icon}</div>
+              <div style={{ flex:1 }}>
+                <div style={{ fontSize:14, fontWeight:800, color:'#1a1a1a' }}>{o.title}</div>
+                <div style={{ fontSize:12, color:'#888', marginTop:2 }}>{o.sub}</div>
               </div>
-              {o.badge && <div style={{ background: o.bc, color: '#fff', fontSize: 10, fontWeight: 800, padding: '3px 9px', borderRadius: 5 }}>{o.badge}</div>}
+              {o.badge && <div style={{ background:o.bc, color:'#fff', fontSize:10, fontWeight:800, padding:'4px 10px', borderRadius:6, boxShadow:`0 2px 8px ${o.bc}55` }}>{o.badge}</div>}
             </div>
           ))}
         </div>
 
         {/* PRODUCTS HEADING */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14 }}>
           <div>
-            <h2 style={{ fontSize: 18, fontWeight: 800, letterSpacing: -0.5, color: '#1a1a1a' }}>
+            <h2 style={{ fontSize:18, fontWeight:800, letterSpacing:-0.5, color:'#1a1a1a' }}>
               {searchQuery ? `Results for "${searchQuery}"` : LABEL[activeCat]}
             </h2>
-            <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{products.length} items</div>
+            <div style={{ fontSize:12, color:'#888', marginTop:2 }}>{products.length} items</div>
           </div>
           {activeCat !== 'All' && (
-            <button onClick={() => setActiveCat('All')} style={{ background: 'transparent', color: '#0c831f', fontSize: 13, fontWeight: 700, border: 'none', cursor: 'pointer' }}>See all →</button>
+            <button onClick={() => setActiveCat('All')} style={{ background:'#f0fff4', color:'#0c831f', fontSize:13, fontWeight:700, border:'1px solid #0c831f', padding:'6px 14px', borderRadius:8, cursor:'pointer' }}>See all →</button>
           )}
         </div>
 
         {/* PRODUCT GRID */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(170px,1fr))', gap: 14, paddingBottom: 24 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(170px,1fr))', gap:14, paddingBottom:24 }}>
           {loading
             ? Array(8).fill(0).map((_,i) => <Skeleton key={i} />)
             : products.length === 0
               ? <div style={{ gridColumn:'1/-1', textAlign:'center', padding:'60px 0' }}>
-                  <div style={{ fontSize: 52, marginBottom: 12 }}>🔍</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: '#1a1a1a' }}>No products found</div>
+                  <div style={{ fontSize:52, marginBottom:12 }}>🔍</div>
+                  <div style={{ fontSize:16, fontWeight:700, color:'#1a1a1a' }}>No products found</div>
                 </div>
               : products.map(p => <ProductCard key={p._id} product={p} />)
           }
         </div>
 
         {/* BANNERS */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 28 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14, marginBottom:28 }}>
           {[
-            { bg:'linear-gradient(135deg,#e8f5e9,#c8e6c9)', title:'Free delivery', sub:'On orders above ₹199', icon:'🚀', color:'#1b5e20' },
-            { bg:'linear-gradient(135deg,#e8f0fe,#c5d8fb)', title:'Always fresh', sub:'Stocked by local shops', icon:'✨', color:'#1a237e' },
+            { bg:'linear-gradient(135deg,#0c831f,#064e12)', title:'Free delivery', sub:'On orders above ₹199', icon:'🚀', color:'#fff', subColor:'rgba(255,255,255,0.7)' },
+            { bg:'linear-gradient(135deg,#1565c0,#0d47a1)', title:'Always fresh', sub:'Stocked by local shops', icon:'✨', color:'#fff', subColor:'rgba(255,255,255,0.7)' },
           ].map(b => (
-            <div key={b.title} style={{ background: b.bg, borderRadius: 14, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid #e0e0e0' }}>
+            <div key={b.title} style={{ background:b.bg, borderRadius:16, padding:'22px 28px', display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer', transition:'all 0.2s', boxShadow:'0 4px 16px rgba(0,0,0,0.1)' }}
+              onMouseEnter={e => { e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 8px 24px rgba(0,0,0,0.15)' }}
+              onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)' }}>
               <div>
-                <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: b.color }}>{b.title}</div>
-                <div style={{ fontSize: 13, color: '#555' }}>{b.sub}</div>
+                <div style={{ fontSize:18, fontWeight:800, marginBottom:4, color:b.color }}>{b.title}</div>
+                <div style={{ fontSize:13, color:b.subColor }}>{b.sub}</div>
               </div>
-              <span style={{ fontSize: 44 }}>{b.icon}</span>
+              <span style={{ fontSize:48 }}>{b.icon}</span>
             </div>
           ))}
         </div>
-
       </div>
 
       {/* FOOTER */}
-      <footer style={{ background: '#fff', borderTop: '1px solid #e0e0e0' }}>
-        <div style={{ padding: '28px 16px', borderBottom: '1px solid #e0e0e0' }}>
-          <h3 style={{ fontSize: 16, fontWeight: 800, color: '#1a1a1a', marginBottom: 16 }}>Popular Searches</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <footer style={{ background:'#fff', borderTop:'1px solid #e0e0e0' }}>
+        <div style={{ padding:'28px 16px', borderBottom:'1px solid #e0e0e0' }}>
+          <h3 style={{ fontSize:16, fontWeight:800, color:'#1a1a1a', marginBottom:16 }}>Popular Searches</h3>
+          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
             {[
               { label:'Products', items:['Maggi','Lays','Kurkure','Bisleri','Amul Butter','Dark Fantasy','Red Bull','Frooti','Glucose-D','Dettol','Colgate','Top Ramen'] },
               { label:'Brands', items:['Amul','Lays','Maggi','Kurkure','Bisleri','Dettol','Colgate','Red Bull','Sunfeast','Parle','Dabur','Vicks'] },
@@ -182,7 +201,7 @@ export default function Home() {
                 <span style={{ fontSize:13, color:'#555' }}>:&nbsp;
                   {row.items.map((item,i) => (
                     <span key={item}>
-                      <span style={{ cursor:'pointer', color:'#555' }} onMouseEnter={e=>e.target.style.color='#f97316'} onMouseLeave={e=>e.target.style.color='#555'}>{item}</span>
+                      <span style={{ cursor:'pointer', color:'#555' }} onMouseEnter={e=>e.target.style.color='#0c831f'} onMouseLeave={e=>e.target.style.color='#555'}>{item}</span>
                       {i < row.items.length-1 && <span style={{ color:'#ccc', margin:'0 6px' }}>|</span>}
                     </span>
                   ))}
@@ -192,50 +211,38 @@ export default function Home() {
           </div>
         </div>
 
-        <div style={{ padding: '28px 16px', borderBottom: '1px solid #e0e0e0' }}>
-          <h3 style={{ fontSize: 16, fontWeight: 800, color: '#1a1a1a', marginBottom: 16 }}>Categories</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '12px 0' }}>
+        <div style={{ padding:'28px 16px', borderBottom:'1px solid #e0e0e0' }}>
+          <h3 style={{ fontSize:16, fontWeight:800, color:'#1a1a1a', marginBottom:16 }}>Categories</h3>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:'12px 0' }}>
             {['Snacks & Munchies','Cold Drinks & Juices','Instant Food','Sweet Cravings','Dairy & Eggs','Stationery','Medicines & Health','Hygiene & Grooming','Breakfast & Sauces','Biscuits & Cookies','Energy Drinks','Water & Beverages','Chips & Crisps','Noodles & Pasta','Personal Care'].map(cat => (
-              <div key={cat} style={{ fontSize:13, color:'#333', cursor:'pointer', padding:'3px 0' }} onMouseEnter={e=>e.target.style.color='#f97316'} onMouseLeave={e=>e.target.style.color='#333'}>{cat}</div>
+              <div key={cat} style={{ fontSize:13, color:'#333', cursor:'pointer', padding:'3px 0' }} onMouseEnter={e=>e.target.style.color='#0c831f'} onMouseLeave={e=>e.target.style.color='#333'}>{cat}</div>
             ))}
           </div>
         </div>
 
-        <div style={{ padding: '32px 16px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 32 }}>
+        <div style={{ padding:'32px 16px', display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:32 }}>
           <div>
             <div style={{ marginBottom:16 }}>
-              <span style={{ fontSize:28, fontWeight:900, letterSpacing:-1, background:'linear-gradient(135deg,#f97316,#ec4899)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>Drop</span>
+              <span style={{ fontSize:28, fontWeight:900, letterSpacing:-1, color:'#0c831f' }}>Drop</span>
               <span style={{ fontSize:28, fontWeight:900, letterSpacing:-1, color:'#1a1a1a' }}>it</span>
-            </div>
-            <div style={{ display:'flex', gap:10, marginBottom:16 }}>
-              {[
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>,
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.4 5.4 3.9 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>,
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>,
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-              ].map((icon,i) => (
-                <div key={i} style={{ width:34, height:34, border:'1px solid #e0e0e0', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer' }}
-                  onMouseEnter={e=>{e.currentTarget.style.borderColor='#f97316';e.currentTarget.style.background='#fff5f0'}}
-                  onMouseLeave={e=>{e.currentTarget.style.borderColor='#e0e0e0';e.currentTarget.style.background='#fff'}}>{icon}</div>
-              ))}
             </div>
             <div style={{ fontSize:11, color:'#aaa', lineHeight:1.8 }}>© DropIt — Sawantwadi<br/>CSE Mini Project 2024</div>
           </div>
           <div>
             {['Home','Delivery Areas','Careers','Customer Support','Press','About DropIt'].map(link => (
-              <div key={link} style={{ fontSize:13, color:'#555', marginBottom:12, cursor:'pointer' }} onMouseEnter={e=>e.target.style.color='#f97316'} onMouseLeave={e=>e.target.style.color='#555'}>{link}</div>
+              <div key={link} style={{ fontSize:13, color:'#555', marginBottom:12, cursor:'pointer' }} onMouseEnter={e=>e.target.style.color='#0c831f'} onMouseLeave={e=>e.target.style.color='#555'}>{link}</div>
             ))}
           </div>
           <div>
             {['Privacy Policy','Terms of Use','Refund Policy','Sell on DropIt','Deliver with DropIt','Partner with us'].map(link => (
-              <div key={link} style={{ fontSize:13, color:'#555', marginBottom:12, cursor:'pointer' }} onMouseEnter={e=>e.target.style.color='#f97316'} onMouseLeave={e=>e.target.style.color='#555'}>{link}</div>
+              <div key={link} style={{ fontSize:13, color:'#555', marginBottom:12, cursor:'pointer' }} onMouseEnter={e=>e.target.style.color='#0c831f'} onMouseLeave={e=>e.target.style.color='#555'}>{link}</div>
             ))}
           </div>
           <div>
             <div style={{ fontSize:14, fontWeight:800, color:'#1a1a1a', marginBottom:14 }}>Download App</div>
             {['Get it on Play Store','Get it on App Store'].map(btn => (
               <div key={btn} style={{ display:'flex', alignItems:'center', gap:10, border:'1px solid #e0e0e0', borderRadius:10, padding:'10px 14px', marginBottom:10, cursor:'pointer' }}
-                onMouseEnter={e=>{e.currentTarget.style.borderColor='#f97316';e.currentTarget.style.background='#fff5f0'}}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor='#0c831f';e.currentTarget.style.background='#f0fff4'}}
                 onMouseLeave={e=>{e.currentTarget.style.borderColor='#e0e0e0';e.currentTarget.style.background='#fff'}}>
                 <span style={{ fontSize:12, fontWeight:600, color:'#1a1a1a' }}>{btn}</span>
               </div>
