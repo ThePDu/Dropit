@@ -94,13 +94,16 @@ export default function Admin() {
 
   const openEdit = (p) => {
     setEditProduct(p)
-    setEditForm({ name: p.name, price: p.price, mrp: p.mrp, category: p.category, stock: p.stock, description: p.description, badge: p.badge || '', image: p.image || '' })
+    const imgs = p.images && p.images.length > 0 ? p.images : [p.image]
+    setEditForm({ name: p.name, price: p.price, mrp: p.mrp, category: p.category, stock: p.stock, description: p.description, badge: p.badge || '', image: p.image || '', image1: imgs[1] || '', image2: imgs[2] || '', image3: imgs[3] || '' })
   }
 
   const saveEdit = async () => {
     setEditSaving(true)
     try {
-      await API.put(`/products/${editProduct._id}`, { ...editForm, price: Number(editForm.price), mrp: Number(editForm.mrp)||Number(editForm.price), stock: Number(editForm.stock) })
+      const { image1, image2, image3, ...rest } = editForm
+      const imagesArray = [editForm.image, image1, image2, image3].filter(img => img && img.trim() !== '')
+      await API.put(`/products/${editProduct._id}`, { ...rest, images: imagesArray, price: Number(editForm.price), mrp: Number(editForm.mrp)||Number(editForm.price), stock: Number(editForm.stock) })
       flash('Product updated! ✅'); setEditProduct(null); fetchAll()
     } catch (err) { flash(err.response?.data?.error || 'Update failed', false) }
     setEditSaving(false)
@@ -378,7 +381,10 @@ export default function Admin() {
               <input style={einp} type="number" placeholder="Stock" value={editForm.stock||''} onChange={e=>setEditForm({...editForm,stock:e.target.value})} />
             </div>
             <input style={einp} placeholder="Description" value={editForm.description||''} onChange={e=>setEditForm({...editForm,description:e.target.value})} />
-            <input style={einp} placeholder="Image URL" value={editForm.image||''} onChange={e=>setEditForm({...editForm,image:e.target.value})} />
+            <input style={einp} placeholder="Main Image URL" value={editForm.image||''} onChange={e=>setEditForm({...editForm,image:e.target.value})} />
+            <input style={einp} placeholder="Extra Image URL 1 (Optional)" value={editForm.image1||''} onChange={e=>setEditForm({...editForm,image1:e.target.value})} />
+            <input style={einp} placeholder="Extra Image URL 2 (Optional)" value={editForm.image2||''} onChange={e=>setEditForm({...editForm,image2:e.target.value})} />
+            <input style={einp} placeholder="Extra Image URL 3 (Optional)" value={editForm.image3||''} onChange={e=>setEditForm({...editForm,image3:e.target.value})} />
             <select style={einp} value={editForm.badge||''} onChange={e=>setEditForm({...editForm,badge:e.target.value})}>
               <option value="">No badge</option>
               <option value="hot">🔥 Hot</option><option value="new">NEW</option>
