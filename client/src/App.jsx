@@ -8,6 +8,7 @@ import Admin    from './pages/Admin.jsx'
 import Login    from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import Product  from './pages/Product.jsx'
+import DropCoins from './pages/DropCoins.jsx'
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/admin"      element={<Admin />} />
         <Route path="/login"      element={<Login />} />
         <Route path="/register"   element={<Register />} />
+        <Route path="/coins"      element={<DropCoins />} />
       </Routes>
     </BrowserRouter>
   )

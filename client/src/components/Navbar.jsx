@@ -1,16 +1,18 @@
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation as useRouteLocation } from 'react-router-dom'
 import { useState } from 'react'
 import { useCart } from '../context/CartContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useLocation } from '../context/LocationContext.jsx'
 
 export default function Navbar() {
   const navigate = useNavigate()
-  const location = useLocation()
+  const routeLocation = useRouteLocation()
   const { cartCount, cartTotal } = useCart()
   const { user, logout } = useAuth()
+  const { location, detectLocation, loading: locLoading } = useLocation()
   const [search, setSearch] = useState('')
 
-  const at = (p) => location.pathname === p
+  const at = (p) => routeLocation.pathname === p
 
   const handleSearch = (e) => {
     if (e.key === 'Enter' && search.trim()) {
@@ -52,12 +54,14 @@ export default function Navbar() {
       </div>
 
       {/* LOCATION */}
-      <div style={{ flexShrink: 0, borderLeft: '1px solid #e0e0e0', paddingLeft: 20 }}>
+      <div onClick={detectLocation} style={{ flexShrink: 0, borderLeft: '1px solid #e0e0e0', paddingLeft: 20, cursor: 'pointer', opacity: locLoading ? 0.6 : 1 }}>
         <div style={{ fontSize: 14, fontWeight: 800, color: '#1a1a1a', letterSpacing: -0.3 }}>
-          Delivery in 10 minutes
+          {locLoading ? 'Detecting...' : (location.city || 'Sawantwadi')}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
-          <span style={{ fontSize: 12, color: '#555' }}>Sawantwadi, Maharashtra</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2, maxWidth: 150 }}>
+          <span style={{ fontSize: 12, color: '#555', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {locLoading ? 'Wait a moment' : (location.address || 'Select Location')}
+          </span>
           <span style={{ fontSize: 11, color: '#555' }}>▼</span>
         </div>
       </div>
@@ -118,6 +122,14 @@ export default function Navbar() {
             <path d="M9 12h6M9 16h4"/>
           </svg>
           <span style={{ fontSize: 11, color: at('/orders') ? '#f97316' : '#555', fontWeight: 600 }}>Orders</span>
+        </div>
+
+        {/* COINS */}
+        <div onClick={() => navigate('/coins')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', gap: 4 }}>
+          <div style={{ width: 26, height: 26, borderRadius: '50%', background: at('/coins') ? '#F5A623' : '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 13, color: at('/coins') ? '#fff' : '#555', border: `2px solid ${at('/coins') ? '#F5A623' : '#555'}` }}>
+            ₹
+          </div>
+          <span style={{ fontSize: 11, color: at('/coins') ? '#F5A623' : '#555', fontWeight: 600 }}>Coins</span>
         </div>
 
         {/* LOGIN / LOGOUT */}

@@ -1,17 +1,38 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
+import { useLocation } from '../context/LocationContext.jsx'
 import API from '../api.js'
+import { useEffect } from 'react'
 
 const EMO = { snacks:'🍟', drinks:'🧃', instant:'🍜', dairy:'🥛', stationery:'✏️', medicines:'💊', hygiene:'🧴' }
 
 export default function Cart() {
   const { cart, changeQty, removeFromCart, clearCart, cartTotal, cartSavings, deliveryFee, showToast } = useCart()
-  const [form, setForm]     = useState({ customerName:'', phone:'', hostelRoom:'', note:'' })
+  const { user } = useAuth()
+  const { location } = useLocation()
+  const [form, setForm]     = useState({ 
+    customerName: user?.name || '', 
+    phone: user?.phone || '', 
+    hostelRoom: user?.hostel || user?.address || (location.isAutoDetected ? location.address : ''), 
+    note: '' 
+  })
   const [payMethod, setPay] = useState('COD')
   const [loading, setLoading] = useState(false)
   const [placed, setPlaced]   = useState(null)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user) {
+      setForm(prev => ({
+        ...prev,
+        customerName: user.name || prev.customerName,
+        phone: user.phone || prev.phone,
+        hostelRoom: user.hostel || user.address || prev.hostelRoom
+      }))
+    }
+  }, [user])
   const totalAmount = cartTotal + deliveryFee
 
   const inp = {

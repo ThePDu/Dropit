@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useLocation } from '../context/LocationContext.jsx'
 import API from '../api.js'
 
 export default function Register() {
@@ -8,6 +9,7 @@ export default function Register() {
   const [error, setError]     = useState('')
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
+  const { detectLocation } = useLocation()
   const navigate  = useNavigate()
 
   const inp = { display:'block', width:'100%', background:'#1c1c1c', border:'1px solid #2a2a2a', color:'#f0f0f0', padding:'11px 14px', borderRadius:9, fontSize:14, marginBottom:10 }
@@ -17,6 +19,11 @@ export default function Register() {
     try {
       const { data } = await API.post('/auth/register', form)
       login(data)
+      try {
+        await detectLocation()
+      } catch (e) {
+        console.log('Location detection skipped or failed')
+      }
       navigate('/')
     } catch (err) {
       setError(err.response?.data?.error || 'Registration failed')

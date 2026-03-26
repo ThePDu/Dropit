@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useLocation } from '../context/LocationContext.jsx'
 import API from '../api.js'
 
 export default function Login() {
@@ -9,6 +10,7 @@ export default function Login() {
   const [error, setError]   = useState('')
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
+  const { detectLocation } = useLocation()
   const navigate  = useNavigate()
 
   const inp = {
@@ -25,6 +27,11 @@ export default function Login() {
       const payload = mode==='login' ? { email:form.email, password:form.password } : form
       const { data } = await API.post(url, payload)
       login(data)
+      try {
+        await detectLocation()
+      } catch (e) {
+        console.log('Location detection skipped or failed')
+      }
       navigate(data.role==='admin' ? '/admin' : '/')
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong')
