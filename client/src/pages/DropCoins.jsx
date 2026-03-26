@@ -2,44 +2,47 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
+import API from '../api.js'
 
 export default function DropCoins() {
   const { user } = useAuth()
   const navigate = useNavigate()
   
-  // Dummy State
   const [balance, setBalance] = useState(0)
   const [displayBalance, setDisplayBalance] = useState(0)
-  const targetBalance = 450 // Dummy current balance
-  
-  const [transactions, setTransactions] = useState([
-    { id: 1, type: 'earned', amount: 10, desc: 'Order #DRP492', date: 'Mar 24' },
-    { id: 2, type: 'earned', amount: 25, desc: 'Review: Maggi Noodles', date: 'Mar 22' },
-    { id: 3, type: 'spent', amount: 100, desc: 'Redeemed ₹5 Discount', date: 'Mar 20' },
-    { id: 4, type: 'earned', amount: 5, desc: 'First order of the day bonus', date: 'Mar 18' },
-    { id: 5, type: 'earned', amount: 100, desc: 'Referral: Rohan S.', date: 'Mar 15' },
-  ])
+  const [transactions, setTransactions] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  // Animated Counter Effect
+  const fetchCoins = async () => {
+    try {
+      const { data } = await API.get('/coins');
+      setBalance(data.balance);
+      setTransactions(data.transactions);
+      
+      // Counter animation logic
+      let start = displayBalance
+      const end = data.balance
+      const duration = 1000
+      const increment = (end - start) / (duration / 16)
+      
+      const timer = setInterval(() => {
+        start += increment
+        if ((increment > 0 && start >= end) || (increment < 0 && start <= end)) {
+          setDisplayBalance(end)
+          clearInterval(timer)
+        } else {
+          setDisplayBalance(Math.floor(start))
+        }
+      }, 16)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
-    let start = 0
-    const end = targetBalance
-    const duration = 1000
-    const increment = end / (duration / 16)
-    
-    const timer = setInterval(() => {
-      start += increment
-      if (start >= end) {
-        setDisplayBalance(end)
-        clearInterval(timer)
-      } else {
-        setDisplayBalance(Math.floor(start))
-      }
-    }, 16)
-    
-    setBalance(targetBalance)
-    return () => clearInterval(timer)
-  }, [targetBalance])
+    if (!user) return navigate('/login')
+    fetchCoins()
+  }, [user])
 
   const tiers = [
     { coins: 100, reward: '₹5 off', icon: '🎟️' },
@@ -55,14 +58,38 @@ export default function DropCoins() {
     { title: '1st order of day', coins: 5, progress: 100, icon: '☀️' },
   ]
 
-  const handleRedeem = (tier) => {
+  const handleRedeem = async (tier) => {
     if (balance >= tier.coins) {
-      alert(`Redeemed ${tier.reward}!`)
-      setBalance(prev => prev - tier.coins)
-      setDisplayBalance(prev => prev - tier.coins)
-      setTransactions([{ id: Date.now(), type: 'spent', amount: tier.coins, desc: `Redeemed ${tier.reward}`, date: 'Now' }, ...transactions])
+      try {
+        const { data } = await API.post('/coins/redeem', { amount: tier.coins, reward: tier.reward });
+        alert(`Redeemed ${tier.reward}!`);
+        setBalance(data.balance);
+        setTransactions(data.transactions);
+        
+        // Update display counter
+        let start = displayBalance
+        const end = data.balance
+        const decrement = (start - end) / (500 / 16)
+        const timer = setInterval(() => {
+          start -= decrement
+          if (start <= end) {
+            setDisplayBalance(end)
+            clearInterval(timer)
+          } else {
+            setDisplayBalance(Math.floor(start))
+          }
+        }, 16)
+      } catch (err) {
+        alert(err.response?.data?.error || 'Redemption failed');
+      }
     }
   }
+
+  if (loading) return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#F5A623' }}>Loading Your Drop Coins...</div>
+    </div>
+  )
 
   const styles = {
     container: { maxWidth: 500, margin: '0 auto', padding: '20px', minHeight: 'calc(100vh - 72px)', background: '#f8f8f8', fontFamily: "'Inter', sans-serif" },
@@ -152,13 +179,13 @@ export default function DropCoins() {
       <div style={styles.sectionTitle}>Recent Activity</div>
       <div style={{ ...styles.card, padding: '5px 16px' }}>
         {transactions.map((tx, i) => (
-          <div key={tx.id} style={{ ...styles.historyRow, borderBottom: i === transactions.length - 1 ? 'none' : '1px solid #f5f5f5' }}>
+          <div key={tx._id || i} style={{ ...styles.historyRow, borderBottom: i === transactions.length - 1 ? 'none' : '1px solid #f5f5f5' }}>
             <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: tx.type === 'earned' ? '#f0fff4' : '#fff1f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>
               {tx.type === 'earned' ? '📥' : '📤'}
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '13px', fontWeight: 600 }}>{tx.desc}</div>
-              <div style={{ fontSize: '11px', color: '#aaa' }}>{tx.date}</div>
+              <div style={{ fontSize: '13px', fontWeight: 600 }}>{tx.description}</div>
+              <div style={{ fontSize: '11px', color: '#aaa' }}>{new Date(tx.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</div>
             </div>
             <div style={{ fontSize: '13px', fontWeight: 800, color: tx.type === 'earned' ? '#0c831f' : '#e23744' }}>
               {tx.type === 'earned' ? '+' : '-'}{tx.amount}

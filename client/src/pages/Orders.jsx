@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import API from '../api.js'
+import { useSocket } from '../context/SocketContext.jsx'
 
 const STATUS_STYLE = {
   Pending:            { bg:'#fff8e1', color:'#f57f17', border:'#ffe082' },
@@ -16,6 +17,7 @@ export default function Orders() {
   const [loading, setLoading] = useState(false)
   const [phone, setPhone] = useState('')
   const [searched, setSearched] = useState(false)
+  const { joinOrderRoom, onOrderStatusUpdate } = useSocket()
 
   const fetchOrders = async () => {
     if (!phone.trim()) return
@@ -24,6 +26,16 @@ export default function Orders() {
       const { data } = await API.get(`/orders/my/${phone.trim()}`)
       setOrders(data)
       setSearched(true)
+
+      // Join socket rooms for each order + listen for live updates
+      data.forEach(o => joinOrderRoom(o._id))
+      onOrderStatusUpdate(({ orderId, orderStatus }) => {
+        setOrders(prev => prev.map(o =>
+          o._id === orderId || o._id?.toString() === orderId?.toString()
+            ? { ...o, orderStatus }
+            : o
+        ))
+      })
     } catch {
       setOrders([])
       setSearched(true)
@@ -61,7 +73,8 @@ export default function Orders() {
           <div style={{ fontSize:15, fontWeight:600, color:'#555' }}>No orders found for this number</div>
         </div>
       ) : orders.map(order => {
-        const s = STATUS_STYLE[order.status] || STATUS_STYLE.Pending
+        const s = STATUS_STYLE[order.orderStatus] || STATUS_STYLE.Pending
+        const isLive = !['Delivered', 'Cancelled'].includes(order.orderStatus)
         return (
           <div key={order._id} style={{ background:'#fff', border:'1px solid #e0e0e0', borderRadius:14, overflow:'hidden', marginBottom:12, boxShadow:'0 2px 8px rgba(0,0,0,0.04)' }}>
             <div style={{ padding:'16px 18px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid #e0e0e0' }}>
@@ -71,9 +84,17 @@ export default function Orders() {
                 </div>
                 <div style={{ fontSize:15, fontWeight:800, color:'#1a1a1a' }}>{order.customerName}</div>
               </div>
-              <span style={{ padding:'5px 14px', borderRadius:20, fontSize:11, fontWeight:800, background:s.bg, color:s.color, border:`1px solid ${s.border}` }}>
-                {order.status}
-              </span>
+              <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                {isLive && (
+                  <span style={{ display:'flex', alignItems:'center', gap:4, fontSize:10, color:'#0c831f', fontWeight:700 }}>
+                    <span style={{ width:6, height:6, borderRadius:'50%', background:'#0c831f', display:'inline-block', animation:'pulse 1.5s infinite' }} />
+                    LIVE
+                  </span>
+                )}
+                <span style={{ padding:'5px 14px', borderRadius:20, fontSize:11, fontWeight:800, background:s.bg, color:s.color, border:`1px solid ${s.border}`, transition:'all 0.3s' }}>
+                  {order.orderStatus}
+                </span>
+              </div>
             </div>
             <div style={{ padding:'14px 18px' }}>
               <div style={{ fontSize:13, color:'#555', lineHeight:1.8, marginBottom:10 }}>
@@ -81,12 +102,13 @@ export default function Orders() {
               </div>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                 <span style={{ fontSize:16, fontWeight:900, color:'#0c831f' }}>₹{order.totalAmount}</span>
-                <span style={{ fontSize:12, color:'#888' }}>{order.hostelRoom}</span>
+                <span style={{ fontSize:12, color:'#888' }}>📍 {order.hostelRoom}</span>
               </div>
             </div>
           </div>
         )
       })}
+      <style>{`@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.4)} }`}</style>
     </div>
   )
 }

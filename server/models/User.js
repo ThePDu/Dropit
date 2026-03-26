@@ -7,6 +7,13 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true, minlength: 6 },
   address:  { type: String, default: '' },
   role:     { type: String, enum: ['customer', 'admin'], default: 'customer' },
+  coins:    { type: Number, default: 0 },
+  transactions: [{
+    type:     { type: String, enum: ['earned', 'spent'], required: true },
+    amount:   { type: Number, required: true },
+    description: { type: String, required: true },
+    date:     { type: Date, default: Date.now }
+  }]
 }, { timestamps: true });
 
 userSchema.pre('save', async function(next) {

@@ -119,7 +119,7 @@ export default function Admin() {
     await API.patch(`/orders/${id}/status`, { orderStatus }); fetchAll()
   }
 
-  const revenue = orders.reduce((a,o)=>a+o.totalPrice,0)
+  const revenue = orders.reduce((a,o)=>a+o.totalAmount,0)
   const pending = orders.filter(o=>o.orderStatus==='Pending').length
 
   const filteredProducts = products.filter(p => {
@@ -342,8 +342,8 @@ export default function Admin() {
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ fontSize:11, color:'#aaa', fontWeight:600 }}>#{o._id.slice(-6).toUpperCase()} · {new Date(o.createdAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>
                 <div style={{ fontSize:14, fontWeight:700, color:'#1a1a1a' }}>{o.customerName}</div>
-                <div style={{ fontSize:12, color:'#888' }}>{o.address} · ₹{o.totalPrice}</div>
-                <div style={{ fontSize:11, color:'#aaa', marginTop:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{o.items.map(i=>`${i.name} ×${i.quantity}`).join(', ')}</div>
+                <div style={{ fontSize:12, color:'#888' }}>{o.hostelRoom} · ₹{o.totalAmount}</div>
+                <div style={{ fontSize:11, color:'#aaa', marginTop:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{o.items.map(i=>`${i.name} ×${i.qty}`).join(', ')}</div>
               </div>
               <select value={o.orderStatus} onChange={e=>updateStatus(o._id,e.target.value)} style={{ background:'#f7f7f7', border:'1px solid #e0e0e0', color:'#1a1a1a', padding:'6px 8px', borderRadius:7, fontSize:12, cursor:'pointer', outline:'none' }}>
                 {['Pending','Confirmed','Out for Delivery','Delivered','Cancelled'].map(s=><option key={s} value={s}>{s}</option>)}

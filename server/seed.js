@@ -169,6 +169,22 @@ async function seed() {
   await Product.insertMany(products);
   console.log(`✅ ${products.length} products added!`);
 
+  const testUser = await User.findOne({ email: 'user@test.com' });
+  if (!testUser) {
+    await User.create({ 
+      name: 'Test User', 
+      email: 'user@test.com', 
+      password: 'user123', 
+      coins: 450,
+      transactions: [
+        { type: 'earned', amount: 10, description: 'Order #DRP492', date: new Date('2026-03-24') },
+        { type: 'earned', amount: 25, description: 'Review: Maggi Noodles', date: new Date('2026-03-22') },
+        { type: 'spent', amount: 100, description: 'Redeemed ₹5 Discount', date: new Date('2026-03-20') }
+      ]
+    });
+    console.log('✅ Test User: user@test.com / user123 (450 coins)');
+  }
+
   const exists = await User.findOne({ email: 'admin@dropit.com' });
   if (!exists) {
     await User.create({ name:'Admin', email:'admin@dropit.com', password:'admin123', role:'admin' });

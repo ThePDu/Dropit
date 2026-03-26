@@ -1,12 +1,148 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useLocation } from '../context/LocationContext.jsx'
+import { useSocket } from '../context/SocketContext.jsx'
 import API from '../api.js'
-import { useEffect } from 'react'
 
 const EMO = { snacks:'🍟', drinks:'🧃', instant:'🍜', dairy:'🥛', stationery:'✏️', medicines:'💊', hygiene:'🧴' }
+
+const STEPS = ['Placed', 'Confirmed', 'Out for Delivery', 'Delivered']
+const STATUS_MAP = {
+  'Pending':           0,
+  'Confirmed':         1,
+  'Out for Delivery':  2,
+  'Delivered':         3,
+  'Cancelled':        -1,
+}
+const STEP_ICONS  = ['📋', '📦', '🛵', '🎉']
+const STEP_LABELS = ['Order Placed', 'Packed & Ready', 'Out for Delivery', 'Delivered!']
+
+// ── Live tracker shown after order is placed ──────────────────────────────────
+function LiveOrderTracker({ order, payMethod }) {
+  const navigate = useNavigate()
+  const { joinOrderRoom, onOrderStatusUpdate } = useSocket()
+  const [currentStatus, setCurrentStatus] = useState(order.orderStatus || 'Pending')
+  const [pulse, setPulse] = useState(false)
+
+  useEffect(() => {
+    // Join the WebSocket room for this order
+    joinOrderRoom(order._id)
+
+    // Listen for live status pushes from the server
+    const unsub = onOrderStatusUpdate(({ orderId, orderStatus }) => {
+      if (orderId === order._id || orderId?.toString() === order._id?.toString()) {
+        setCurrentStatus(orderStatus)
+        setPulse(true)
+        setTimeout(() => setPulse(false), 800)
+      }
+    })
+    return unsub
+  }, [order._id])
+
+  const stepIdx  = STATUS_MAP[currentStatus] ?? 0
+  const progress = currentStatus === 'Cancelled' ? 0 : Math.max(10, (stepIdx / (STEPS.length - 1)) * 100)
+  const cancelled = currentStatus === 'Cancelled'
+
+  const statusColors = {
+    Delivered:        { bg: '#f0fff4', border: '#0c831f', text: '#0c831f' },
+    'Out for Delivery': { bg: '#e8f0fe', border: '#2979ff', text: '#2979ff' },
+    Confirmed:        { bg: '#fff9e6', border: '#f5a623', text: '#f5a623' },
+    Cancelled:        { bg: '#fff1f0', border: '#e23744', text: '#e23744' },
+    Pending:          { bg: '#f0fff4', border: '#0c831f', text: '#0c831f' },
+  }
+  const col = statusColors[currentStatus] || statusColors.Pending
+
+  return (
+    <div style={{ minHeight:'calc(100vh - 64px)', display:'flex', alignItems:'center', justifyContent:'center', padding:20, background:'#f8f8f8' }}>
+      <div style={{ background:'#fff', border:'1px solid #e0e0e0', borderRadius:24, padding:'36px 32px', maxWidth:480, width:'100%', boxShadow:'0 8px 32px rgba(0,0,0,0.08)' }}>
+
+        {/* Header */}
+        <div style={{ textAlign:'center', marginBottom:28 }}>
+          <div style={{ fontSize:60, marginBottom:12, transition:'transform 0.3s', transform: pulse ? 'scale(1.2)' : 'scale(1)' }}>
+            {cancelled ? '❌' : STEP_ICONS[stepIdx] ?? '📋'}
+          </div>
+          <h2 style={{ fontSize:22, fontWeight:900, letterSpacing:-0.5, marginBottom:6, color:'#1a1a1a' }}>
+            {cancelled ? 'Order Cancelled' : currentStatus === 'Delivered' ? 'Delivered! Enjoy 🎉' : 'Tracking Your Order'}
+          </h2>
+          <div style={{ display:'inline-flex', alignItems:'center', gap:8, background: col.bg, border:`1.5px solid ${col.border}`, color: col.text, padding:'6px 16px', borderRadius:20, fontSize:13, fontWeight:800 }}>
+            <span style={{ width:8, height:8, borderRadius:'50%', background: col.text, display:'inline-block',
+              animation: !['Delivered','Cancelled'].includes(currentStatus) ? 'pulse 1.5s infinite' : 'none' }} />
+            {currentStatus}
+          </div>
+        </div>
+
+        {/* Order ID + address */}
+        <div style={{ background:'#f8f8f8', borderRadius:12, padding:'12px 16px', marginBottom:24, display:'flex', justifyContent:'space-between', alignItems:'center', fontSize:13 }}>
+          <div>
+            <div style={{ fontWeight:800, color:'#1a1a1a' }}>Order #{order._id?.slice(-6).toUpperCase()}</div>
+            <div style={{ color:'#888', marginTop:2 }}>📍 {order.hostelRoom}</div>
+          </div>
+          <div style={{ textAlign:'right', color:'#888' }}>
+            <div style={{ fontWeight:800, color:'#0c831f', fontSize:15 }}>₹{order.totalAmount}</div>
+            <div style={{ fontSize:12 }}>{payMethod}</div>
+          </div>
+        </div>
+
+        {/* Progress Bar */}
+        {!cancelled && (
+          <div style={{ marginBottom:28 }}>
+            <div style={{ display:'flex', justifyContent:'space-between', marginBottom:10 }}>
+              {STEP_LABELS.map((label, i) => {
+                const done    = i <= stepIdx
+                const current = i === stepIdx
+                return (
+                  <div key={label} style={{ flex:1, textAlign:'center' }}>
+                    <div style={{
+                      width:32, height:32, borderRadius:'50%', margin:'0 auto 6px',
+                      background: done ? '#0c831f' : '#f0f0f0',
+                      border:`2px solid ${done ? '#0c831f' : '#e0e0e0'}`,
+                      display:'flex', alignItems:'center', justifyContent:'center',
+                      fontSize:14, transition:'all 0.4s',
+                      boxShadow: current ? '0 0 0 4px rgba(12,131,31,0.15)' : 'none',
+                      transform: current ? 'scale(1.12)' : 'scale(1)',
+                    }}>
+                      {done ? (current && currentStatus !== 'Delivered' ? STEP_ICONS[i] : '✓') : STEP_ICONS[i]}
+                    </div>
+                    <div style={{ fontSize:9, color: done ? '#0c831f' : '#aaa', fontWeight:700, lineHeight:1.3 }}>
+                      {label}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            {/* Connecting bar */}
+            <div style={{ background:'#f0f0f0', borderRadius:20, height:6, overflow:'hidden' }}>
+              <div style={{ height:'100%', background:'linear-gradient(90deg, #0c831f, #38c75e)', borderRadius:20, width:`${progress}%`, transition:'width 0.8s ease-in-out' }} />
+            </div>
+          </div>
+        )}
+
+        {/* Live indicator */}
+        {!cancelled && currentStatus !== 'Delivered' && (
+          <div style={{ background:'#f0fff4', border:'1px solid #a5d6a7', borderRadius:10, padding:'10px 14px', marginBottom:20, display:'flex', alignItems:'center', gap:8, fontSize:12, color:'#2e7d32' }}>
+            <span style={{ width:8, height:8, borderRadius:'50%', background:'#0c831f', display:'inline-block', animation:'pulse 1.5s infinite' }} />
+            <strong>Live tracking active</strong> — this page updates automatically
+          </div>
+        )}
+
+        {/* Actions */}
+        <div style={{ display:'flex', gap:10 }}>
+          <button onClick={() => navigate('/')} style={{ flex:1, background:'#0c831f', color:'#fff', border:'none', padding:13, borderRadius:10, fontWeight:800, fontSize:14, cursor:'pointer' }}>
+            Continue shopping
+          </button>
+          <button onClick={() => navigate('/orders')} style={{ flex:1, background:'#f8f8f8', color:'#555', border:'1px solid #e0e0e0', padding:13, borderRadius:10, fontWeight:600, fontSize:14, cursor:'pointer' }}>
+            All orders
+          </button>
+        </div>
+      </div>
+
+      {/* Keyframe for the pulse dot */}
+      <style>{`@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.4)} }`}</style>
+    </div>
+  )
+}
 
 export default function Cart() {
   const { cart, changeQty, removeFromCart, clearCart, cartTotal, cartSavings, deliveryFee, showToast } = useCart()
@@ -59,37 +195,8 @@ export default function Cart() {
     setLoading(false)
   }
 
-  if (placed) return (
-    <div style={{ minHeight:'calc(100vh - 64px)', display:'flex', alignItems:'center', justifyContent:'center', padding:40, background:'#f8f8f8' }}>
-      <div style={{ background:'#fff', border:'1px solid #e0e0e0', borderRadius:20, padding:48, textAlign:'center', maxWidth:460, width:'100%', boxShadow:'0 4px 24px rgba(0,0,0,0.08)' }}>
-        <div style={{ fontSize:72, marginBottom:18 }}>✅</div>
-        <h2 style={{ fontSize:26, fontWeight:900, letterSpacing:-1, marginBottom:8, color:'#1a1a1a' }}>Order placed!</h2>
-        <p style={{ color:'#555', fontSize:14, marginBottom:16, lineHeight:1.7 }}>
-          Preparing your order for<br /><strong style={{ color:'#0c831f' }}>{placed.hostelRoom}</strong>
-        </p>
-        <div style={{ display:'inline-block', background:'#f0fff4', border:'1px solid #0c831f', padding:'8px 20px', borderRadius:8, fontSize:13, fontWeight:700, color:'#0c831f', marginBottom:24 }}>
-          Order #{placed._id?.slice(-6).toUpperCase()}
-        </div>
-        <div style={{ display:'flex', justifyContent:'space-between', marginBottom:8 }}>
-          {['Placed','Preparing','Out for delivery','Delivered'].map((s, i) => (
-            <div key={s} style={{ flex:1, textAlign:'center' }}>
-              <div style={{ width:10, height:10, borderRadius:'50%', margin:'0 auto 5px', background: i===0?'#0c831f':'#e0e0e0', border:`2px solid ${i===0?'#0c831f':'#e0e0e0'}` }} />
-              <div style={{ fontSize:9, color:'#888', fontWeight:600 }}>{s}</div>
-            </div>
-          ))}
-        </div>
-        <div style={{ background:'#f0f0f0', borderRadius:20, height:5, marginBottom:22, overflow:'hidden' }}>
-          <div style={{ height:'100%', background:'#0c831f', borderRadius:20, width:'20%' }} />
-        </div>
-        <p style={{ fontSize:12, color:'#888', marginBottom:24 }}>Estimated: 10–15 min · {payMethod}</p>
-        <div style={{ display:'flex', gap:10, justifyContent:'center' }}>
-          <button onClick={() => navigate('/')} style={{ background:'#0c831f', color:'#fff', border:'none', padding:'11px 22px', borderRadius:10, fontWeight:800, fontSize:14, cursor:'pointer' }}>Continue shopping</button>
-          <button onClick={() => navigate('/orders')} style={{ background:'#f8f8f8', color:'#555', border:'1px solid #e0e0e0', padding:'11px 22px', borderRadius:10, fontWeight:600, fontSize:14, cursor:'pointer' }}>View orders</button>
-        </div>
-      </div>
-    </div>
-  )
-
+  if (placed) return <LiveOrderTracker order={placed} payMethod={payMethod} />
+  
   if (!cart.length) return (
     <div style={{ minHeight:'calc(100vh - 64px)', display:'flex', alignItems:'center', justifyContent:'center', background:'#f8f8f8' }}>
       <div style={{ textAlign:'center' }}>
