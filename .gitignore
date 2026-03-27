@@ -1,0 +1,14 @@
+# ignore all node modules everywhere
+node_modules/
+
+# frontend build
+client/dist/
+
+# backend env
+server/.env
+
+# logs
+*.log
+
+# OS files
+.DS_Store
