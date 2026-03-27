@@ -4,6 +4,8 @@ import { useCart } from '../context/CartContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useLocation } from '../context/LocationContext.jsx'
 
+import LocationEditModal from './LocationEditModal.jsx'
+
 export default function Navbar() {
   const navigate = useNavigate()
   const routeLocation = useRouteLocation()
@@ -11,6 +13,7 @@ export default function Navbar() {
   const { user, logout } = useAuth()
   const { location, detectLocation, loading: locLoading } = useLocation()
   const [search, setSearch] = useState('')
+  const [isLocModalOpen, setIsLocModalOpen] = useState(false)
 
   const at = (p) => routeLocation.pathname === p
 
@@ -21,6 +24,8 @@ export default function Navbar() {
   }
 
   return (
+    <>
+    <LocationEditModal isOpen={isLocModalOpen} onClose={() => setIsLocModalOpen(false)} />
     <nav style={{
       background: 'rgba(255, 255, 255, 0.85)',
       backdropFilter: 'blur(16px)',
@@ -54,15 +59,18 @@ export default function Navbar() {
       </div>
 
       {/* LOCATION */}
-      <div onClick={detectLocation} style={{ flexShrink: 0, borderLeft: '1px solid #e0e0e0', paddingLeft: 20, cursor: 'pointer', opacity: locLoading ? 0.6 : 1 }}>
-        <div style={{ fontSize: 14, fontWeight: 800, color: '#1a1a1a', letterSpacing: -0.3 }}>
+      <div onClick={() => setIsLocModalOpen(true)} style={{ flexShrink: 0, borderLeft: '1px solid #e0e0e0', paddingLeft: 20, cursor: 'pointer', opacity: locLoading ? 0.6 : 1, transition: 'all 0.2s', display: 'flex', flexDirection: 'column', gap: '2px' }} onMouseEnter={e => e.currentTarget.style.opacity=0.8} onMouseLeave={e => e.currentTarget.style.opacity=locLoading?0.6:1}>
+        <div style={{ fontSize: 13, fontWeight: 600, color: '#f97316', display: 'flex', alignItems: 'center', gap: 4 }}>
+          <span>📍</span> Location
+        </div>
+        <div style={{ fontSize: 14, fontWeight: 900, color: '#1a1a1a', letterSpacing: -0.3 }}>
           {locLoading ? 'Detecting...' : (location.city || 'Sawantwadi')}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2, maxWidth: 150 }}>
-          <span style={{ fontSize: 12, color: '#555', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {locLoading ? 'Wait a moment' : (location.address || 'Select Location')}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4, maxWidth: 150 }}>
+          <span style={{ fontSize: 11, color: '#666', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {locLoading ? 'Wait a moment' : (location.address || 'Select Address')}
           </span>
-          <span style={{ fontSize: 11, color: '#555' }}>▼</span>
+          <span style={{ fontSize: 10, color: '#f97316' }}>▼</span>
         </div>
       </div>
 
@@ -132,6 +140,18 @@ export default function Navbar() {
           <span style={{ fontSize: 11, color: at('/coins') ? '#F5A623' : '#555', fontWeight: 600 }}>Coins</span>
         </div>
 
+        {/* STORES */}
+        <div onClick={() => navigate('/stores')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', gap: 4 }}>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={at('/stores') ? '#F5A623' : '#555'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" />
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+            <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" />
+            <path d="M2 7h20" />
+            <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7" />
+          </svg>
+          <span style={{ fontSize: 11, color: at('/stores') ? '#F5A623' : '#555', fontWeight: 600 }}>Stores</span>
+        </div>
+
         {/* LOGIN / LOGOUT */}
         {user ? (
           <div onClick={() => { logout(); navigate('/') }} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', gap: 4 }}>
@@ -168,5 +188,6 @@ export default function Navbar() {
 
       </div>
     </nav>
+    </>
   )
 }

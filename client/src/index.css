@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
@@ -57,4 +61,28 @@ select option { background: #fff; color: #1a1a1a; }
   background-size: 400px 100%;
   animation: shimmer 1.4s infinite;
   border-radius: 10px;
+}
+
+/* Tailwind Base overrides for the Stores Page specifically */
+@layer base {
+  .font-body { font-family: 'DM Sans', sans-serif; }
+  .font-heading { font-family: 'Poppins', sans-serif; }
+}
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulseRing 2s infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
