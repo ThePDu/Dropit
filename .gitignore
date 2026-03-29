@@ -1,14 +1,50 @@
-# ignore all node modules everywhere
+# ─── Node Modules ──────────────────────────────────────
 node_modules/
+client/node_modules/
+server/node_modules/
 
-# frontend build
+# ─── Build Outputs ─────────────────────────────────────
 client/dist/
+client/build/
+server/dist/
+server/build/
 
-# backend env
+# ─── Environment Variables ──────────────────────────────
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 server/.env
+client/.env
 
-# logs
+# ─── Logs ──────────────────────────────────────────────
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+server/logs/
 
-# OS files
+# ─── OS & Editor Files ─────────────────────────────────
 .DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ─── Vite / Build Cache ────────────────────────────────
+client/.vite/
+.cache/
+
+# ─── Uploads (user-generated files) ─────────────────────
+server/uploads/
+
+# ─── Misc ──────────────────────────────────────────────
+*.pem
+coverage/
