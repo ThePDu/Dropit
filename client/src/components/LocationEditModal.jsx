@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from '../context/LocationContext';
 
 const LocationEditModal = ({ isOpen, onClose }) => {
   const { location, updateLocation, detectLocation } = useLocation();
   const [address, setAddress] = useState(location.address || '');
   const [city, setCity] = useState(location.city || '');
+
+  // Sync inputs when modal opens or location changes externally
+  useEffect(() => {
+    if (isOpen) {
+      setAddress(location.address || '')
+      setCity(location.city || '')
+    }
+  }, [isOpen, location])
+
 
   if (!isOpen) return null;
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import { useLocation as useAppLocation } from '../context/LocationContext.jsx'
 import API from '../api.js'
 import ProductCard from '../components/ProductCard.jsx'
 
@@ -51,6 +52,7 @@ export default function Home() {
   const [loading, setLoading]   = useState(true)
   const [activeCat, setActiveCat] = useState('All')
   const location  = useLocation()
+  const { location: appLocation } = useAppLocation()
   const searchQuery = new URLSearchParams(location.search).get('search') || ''
 
   useEffect(() => { fetchProducts() }, [activeCat, searchQuery])
@@ -116,7 +118,7 @@ export default function Home() {
           <div style={{ position: 'relative', zIndex: 1, maxWidth: '65%' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: '#fff', border: 'none', color: '#e65100', padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 800, marginBottom: 18, textTransform: 'uppercase', letterSpacing: 0.5, boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}>
               <span style={{ width: 8, height: 8, background: '#ff3b30', borderRadius: '50%', display: 'inline-block', animation: 'pulseRing 1.5s infinite' }} />
-              Live · Delivering to Sawantwadi
+              Live · Delivering to {appLocation?.city || 'Sawantwadi'}
             </div>
             
             <h1 style={{ fontSize: 44, fontWeight: 900, letterSpacing: -1.5, lineHeight: 1.1, marginBottom: 16, color: '#1a1a1a' }}>

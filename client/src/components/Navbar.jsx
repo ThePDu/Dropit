@@ -53,7 +53,7 @@ export default function Navbar() {
             </span>
           </div>
           <div style={{ fontSize: 9, color: '#aaa', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginTop: 2 }}>
-            Sawantwadi
+            {location?.city || 'Sawantwadi'}
           </div>
         </div>
       </div>
