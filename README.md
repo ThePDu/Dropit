@@ -58,3 +58,5 @@ Password: admin123
 - /admin — Admin dashboard
 - /login — Login
 - /register — Register
+- /canteen — Campus canteen pickup (separate from delivery flow)
+- /canteen-admin — Canteen kitchen dashboard (admin only)

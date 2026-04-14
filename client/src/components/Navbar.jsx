@@ -108,7 +108,19 @@ export default function Navbar() {
       </div>
 
       {/* RIGHT ICONS */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 28, marginLeft: 'auto', flexShrink: 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 22, marginLeft: 'auto', flexShrink: 0 }}>
+
+        {/* CANTEEN PICKUP */}
+        <div onClick={() => navigate('/canteen')} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', background: '#111827', color: '#fff', padding: '10px 14px', borderRadius: 12, boxShadow: '0 6px 16px rgba(0,0,0,0.18)', border: at('/canteen') ? '2px solid #f97316' : '1px solid #111827', transition: 'all 0.15s' }} onMouseEnter={e => e.currentTarget.style.transform='translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform='translateY(0)'} >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 7h18l-1.5 11.25A2 2 0 0 1 17.52 20H6.48a2 2 0 0 1-1.98-1.75L3 7Z" />
+            <path d="M8 7c0-2 1.5-3.5 4-3.5S16 5 16 7" />
+          </svg>
+          <div style={{ display:'flex', flexDirection:'column', lineHeight:1 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 0.2 }}>Canteen</span>
+            <span style={{ fontSize: 10, opacity: 0.85 }}>Pickup only</span>
+          </div>
+        </div>
 
         {/* ADMIN */}
         {user?.role === 'admin' && (
@@ -119,6 +131,16 @@ export default function Navbar() {
               <path d="M12 2v2M12 20v2M2 12h2M20 12h2"/>
             </svg>
             <span style={{ fontSize: 11, color: at('/admin') ? '#f97316' : '#555', fontWeight: 600 }}>Admin</span>
+          </div>
+        )}
+        {user?.role === 'admin' && (
+          <div onClick={() => navigate('/canteen-admin')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', gap: 4 }}>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={at('/canteen-admin') ? '#f97316' : '#555'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 3h16l-1.5 14a2 2 0 0 1-2 1.7H7.5a2 2 0 0 1-2-1.7L4 3Z" />
+              <path d="M9 8h6" />
+              <path d="M8 13h8" />
+            </svg>
+            <span style={{ fontSize: 11, color: at('/canteen-admin') ? '#f97316' : '#555', fontWeight: 600 }}>Kitchen</span>
           </div>
         )}
 

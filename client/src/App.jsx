@@ -10,6 +10,8 @@ import Register from './pages/Register.jsx'
 import Product  from './pages/Product.jsx'
 import DropCoins from './pages/DropCoins.jsx'
 import Stores from './pages/Stores.jsx'
+import Canteen from './pages/Canteen.jsx'
+import CanteenAdmin from './pages/CanteenAdmin.jsx'
 
 export default function App() {
   return (
@@ -26,6 +28,8 @@ export default function App() {
         <Route path="/register"   element={<Register />} />
         <Route path="/coins"      element={<DropCoins />} />
         <Route path="/stores"     element={<Stores />} />
+        <Route path="/canteen"    element={<Canteen />} />
+        <Route path="/canteen-admin" element={<CanteenAdmin />} />
       </Routes>
     </BrowserRouter>
   )

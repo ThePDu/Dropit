@@ -28,6 +28,7 @@ app.use('/api/cart',     require('./routes/cart'));
 app.use('/api/orders',   require('./routes/orders'));
 app.use('/api/upload',   require('./routes/upload'));
 app.use('/api/coins',    require('./routes/coins'));
+app.use('/api/canteen',  require('./routes/canteen'));
 
 app.get('/', (req, res) => res.json({ message: '🛵 DropIt API Running!' }));
 
