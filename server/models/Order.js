@@ -17,8 +17,9 @@ const orderSchema = new mongoose.Schema({
   deliveryFee:   { type: Number, default: 0 },
   totalAmount:   { type: Number, required: true },
   paymentMethod: { type: String, enum: ['COD','UPI'], default: 'COD' },
-  orderStatus:   { type: String, enum: ['Pending','Confirmed','Out for Delivery','Delivered','Cancelled'], default: 'Pending' },
+  orderStatus:   { type: String, enum: ['Pending','Confirmed','Out for Delivery','Delivered','Cancelled', 'accepted', 'preparing', 'out_for_delivery', 'delivered', 'rejected'], default: 'Pending' },
   note:          { type: String, default: '' },
+  storeId:       { type: mongoose.Schema.Types.ObjectId, ref: 'Store', default: null },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', orderSchema);

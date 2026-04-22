@@ -23,6 +23,8 @@ export default function Navbar() {
     }
   }
 
+  if (routeLocation.pathname.startsWith('/seller')) return null;
+
   return (
     <>
     <LocationEditModal isOpen={isLocModalOpen} onClose={() => setIsLocModalOpen(false)} />
@@ -172,6 +174,16 @@ export default function Navbar() {
             <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7" />
           </svg>
           <span style={{ fontSize: 11, color: at('/stores') ? '#F5A623' : '#555', fontWeight: 600 }}>Stores</span>
+        </div>
+
+        {/* SELLER LOGIN */}
+        <div onClick={() => navigate('/seller/login')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', gap: 4 }}>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <line x1="3" y1="9" x2="21" y2="9"/>
+            <line x1="9" y1="21" x2="9" y2="9"/>
+          </svg>
+          <span style={{ fontSize: 11, color: '#f59e0b', fontWeight: 600 }}>Seller</span>
         </div>
 
         {/* LOGIN / LOGOUT */}

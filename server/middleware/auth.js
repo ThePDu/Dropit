@@ -21,4 +21,23 @@ const adminOnly = (req, res, next) => {
   res.status(403).json({ error: 'Admin only' });
 };
 
-module.exports = { protect, adminOnly };
+const protectAdminOrSeller = async (req, res, next) => {
+  let token;
+  if (req.headers.authorization?.startsWith('Bearer')) {
+    try {
+      token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      if (decoded.role === 'seller') {
+        const Store = require('../models/Store');
+        req.seller = await Store.findById(decoded.id).select('-password');
+        if (req.seller) return next();
+      } else {
+        req.user = await User.findById(decoded.id).select('-password');
+        if (req.user?.role === 'admin') return next();
+      }
+    } catch (e) {}
+  }
+  return res.status(401).json({ error: 'Not authorized as admin or seller' });
+};
+
+module.exports = { protect, adminOnly, protectAdminOrSeller };

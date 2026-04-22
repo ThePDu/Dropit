@@ -1,6 +1,6 @@
 const router  = require('express').Router();
 const Product = require('../models/Product');
-const { protect, adminOnly } = require('../middleware/auth');
+const { protect, adminOnly, protectAdminOrSeller } = require('../middleware/auth');
 
 router.get('/', async (req, res) => {
   try {
@@ -19,26 +19,44 @@ router.get('/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-router.post('/', protect, adminOnly, async (req, res) => {
-  try { res.status(201).json(await Product.create(req.body)); }
+router.post('/', protectAdminOrSeller, async (req, res) => {
+  try { 
+    const body = { ...req.body };
+    if (req.seller) body.storeId = req.seller._id;
+    res.status(201).json(await Product.create(body)); 
+  }
   catch (err) { res.status(400).json({ error: err.message }); }
 });
 
-// ✅ PUT - update product (edit + stock)
-router.put('/:id', protect, adminOnly, async (req, res) => {
+router.get('/store/:storeId', async (req, res) => {
   try {
-    const p = await Product.findByIdAndUpdate(
-      req.params.id,
+    res.json(await Product.find({ storeId: req.params.storeId }).sort({ createdAt: -1 }));
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ✅ PUT - update product (edit + stock)
+router.put('/:id', protectAdminOrSeller, async (req, res) => {
+  try {
+    const query = { _id: req.params.id };
+    if (req.seller) query.storeId = req.seller._id;
+    const p = await Product.findOneAndUpdate(
+      query,
       { $set: req.body },
       { new: true, runValidators: true }
     );
-    if (!p) return res.status(404).json({ error: 'Not found' });
+    if (!p) return res.status(404).json({ error: 'Not found or unauthorized' });
     res.json(p);
   } catch (err) { res.status(400).json({ error: err.message }); }
 });
 
-router.delete('/:id', protect, adminOnly, async (req, res) => {
-  try { await Product.findByIdAndDelete(req.params.id); res.json({ message: 'Deleted' }); }
+router.delete('/:id', protectAdminOrSeller, async (req, res) => {
+  try { 
+    const query = { _id: req.params.id };
+    if (req.seller) query.storeId = req.seller._id;
+    const p = await Product.findOneAndDelete(query); 
+    if (!p) return res.status(404).json({ error: 'Not found or unauthorized' });
+    res.json({ message: 'Deleted' }); 
+  }
   catch (err) { res.status(500).json({ error: err.message }); }
 });
 

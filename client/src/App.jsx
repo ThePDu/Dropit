@@ -12,6 +12,9 @@ import DropCoins from './pages/DropCoins.jsx'
 import Stores from './pages/Stores.jsx'
 import Canteen from './pages/Canteen.jsx'
 import CanteenAdmin from './pages/CanteenAdmin.jsx'
+import SellerLogin from './pages/SellerLogin.jsx'
+import SellerRegister from './pages/SellerRegister.jsx'
+import SellerDashboard from './pages/SellerDashboard.jsx'
 
 export default function App() {
   return (
@@ -30,6 +33,9 @@ export default function App() {
         <Route path="/stores"     element={<Stores />} />
         <Route path="/canteen"    element={<Canteen />} />
         <Route path="/canteen-admin" element={<CanteenAdmin />} />
+        <Route path="/seller/login"      element={<SellerLogin />} />
+        <Route path="/seller/register"   element={<SellerRegister />} />
+        <Route path="/seller/dashboard"  element={<SellerDashboard />} />
       </Routes>
     </BrowserRouter>
   )

@@ -11,6 +11,7 @@ const productSchema = new mongoose.Schema({
   image: { type: String, default: '' },
   images: { type: [String], default: [] },
   isActive: { type: Boolean, default: true },
+  storeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Store', default: null }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Product', productSchema);
