@@ -185,10 +185,10 @@ async function seed() {
     console.log('✅ Test User: user@test.com / user123 (450 coins)');
   }
 
-  const exists = await User.findOne({ email: 'admin@dropit.com' });
+  const exists = await User.findOne({ email: 'prashantdubey2306@gmail.com' });
   if (!exists) {
-    await User.create({ name:'Admin', email:'admin@dropit.com', password:'admin123', role:'admin' });
-    console.log('✅ Admin: admin@dropit.com / admin123');
+    await User.create({ name:'Admin', email:'prashantdubey2306@gmail.com', password:'123456789', role:'admin' });
+    console.log('✅ Admin: prashantdubey2306@gmail.com / 123456789');
   } else {
     console.log('ℹ️  Admin already exists');
   }

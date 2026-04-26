@@ -15,6 +15,8 @@ import CanteenAdmin from './pages/CanteenAdmin.jsx'
 import SellerLogin from './pages/SellerLogin.jsx'
 import SellerRegister from './pages/SellerRegister.jsx'
 import SellerDashboard from './pages/SellerDashboard.jsx'
+import Deals from './pages/Deals.jsx'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
 
 export default function App() {
   return (
@@ -22,20 +24,22 @@ export default function App() {
       <Navbar />
       <Toast />
       <Routes>
-        <Route path="/"           element={<Home />} />
-        <Route path="/product/:id" element={<Product />} />
-        <Route path="/cart"       element={<Cart />} />
-        <Route path="/orders"     element={<Orders />} />
-        <Route path="/admin"      element={<Admin />} />
         <Route path="/login"      element={<Login />} />
         <Route path="/register"   element={<Register />} />
-        <Route path="/coins"      element={<DropCoins />} />
-        <Route path="/stores"     element={<Stores />} />
-        <Route path="/canteen"    element={<Canteen />} />
-        <Route path="/canteen-admin" element={<CanteenAdmin />} />
         <Route path="/seller/login"      element={<SellerLogin />} />
         <Route path="/seller/register"   element={<SellerRegister />} />
-        <Route path="/seller/dashboard"  element={<SellerDashboard />} />
+        
+        <Route path="/"           element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="/product/:id" element={<ProtectedRoute><Product /></ProtectedRoute>} />
+        <Route path="/cart"       element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+        <Route path="/orders"     element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+        <Route path="/admin"      element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+        <Route path="/coins"      element={<ProtectedRoute><DropCoins /></ProtectedRoute>} />
+        <Route path="/deals"      element={<ProtectedRoute><Deals /></ProtectedRoute>} />
+        <Route path="/stores"     element={<ProtectedRoute><Stores /></ProtectedRoute>} />
+        <Route path="/canteen"    element={<ProtectedRoute><Canteen /></ProtectedRoute>} />
+        <Route path="/canteen-admin" element={<ProtectedRoute><CanteenAdmin /></ProtectedRoute>} />
+        <Route path="/seller/dashboard"  element={<ProtectedRoute><SellerDashboard /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   )

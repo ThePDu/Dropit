@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx'
 import { useLocation } from '../context/LocationContext.jsx'
 import API from '../api.js'
 
-export default function Login() {
+export default function Login({ isModal }) {
   const [mode, setMode]     = useState('login')
   const [form, setForm]     = useState({ name:'', email:'', password:'', phone:'', hostel:'' })
   const [error, setError]   = useState('')
@@ -40,7 +40,7 @@ export default function Login() {
   }
 
   return (
-    <div style={{ minHeight:'calc(100vh - 64px)', display:'flex', alignItems:'center', justifyContent:'center', padding:20, background:'#f8f8f8' }}>
+    <div style={isModal ? { display:'flex', justifyContent:'center', padding:20 } : { minHeight:'calc(100vh - 64px)', display:'flex', alignItems:'center', justifyContent:'center', padding:20, background:'#f8f8f8' }}>
       <div style={{ background:'#fff', border:'1px solid #e0e0e0', borderRadius:20, padding:40, width:'100%', maxWidth:400, boxShadow:'0 4px 24px rgba(0,0,0,0.08)', animation:'slideUp 0.3s ease' }}>
 
         {/* Logo */}
@@ -119,12 +119,7 @@ export default function Login() {
           {loading ? 'Please wait...' : mode==='login' ? 'Login' : 'Create account'}
         </button>
 
-        {/* Admin hint */}
-        {mode==='login' && (
-          <div style={{ marginTop:16, background:'#f0fff4', border:'1px solid #a5d6a7', borderRadius:8, padding:'10px 14px', fontSize:12, color:'#555', textAlign:'center' }}>
-            Admin: <span style={{ color:'#0c831f', fontWeight:700 }}>admin@dropit.com</span> / <span style={{ color:'#0c831f', fontWeight:700 }}>admin123</span>
-          </div>
-        )}
+
       </div>
     </div>
   )

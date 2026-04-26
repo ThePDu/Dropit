@@ -9,7 +9,7 @@ import LocationEditModal from './LocationEditModal.jsx'
 export default function Navbar() {
   const navigate = useNavigate()
   const routeLocation = useRouteLocation()
-  const { cartCount, cartTotal } = useCart()
+  const { cartCount, cartTotal, clearCart } = useCart()
   const { user, logout } = useAuth()
   const { location, detectLocation, loading: locLoading } = useLocation()
   const [search, setSearch] = useState('')
@@ -188,11 +188,10 @@ export default function Navbar() {
 
         {/* LOGIN / LOGOUT */}
         {user ? (
-          <div onClick={() => { logout(); navigate('/') }} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', gap: 4 }}>
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
+          <div onClick={() => { logout(); clearCart(); navigate('/') }} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', gap: 4 }}>
+            <div style={{ width: 26, height: 26, borderRadius: '50%', background: '#f97316', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 14 }}>
+              {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+            </div>
             <span style={{ fontSize: 11, color: '#555', fontWeight: 600 }}>Logout</span>
           </div>
         ) : (

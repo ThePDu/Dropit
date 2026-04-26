@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useLocation as useAppLocation } from '../context/LocationContext.jsx'
 import API from '../api.js'
 import ProductCard from '../components/ProductCard.jsx'
+import 'bootstrap/dist/css/bootstrap-grid.min.css'
 
 const CATS = ['All','snacks','drinks','instant','dairy','stationery','medicines','hygiene','fruits','veg','meat','sweet','frozen','cleaning','paan']
 
@@ -52,6 +53,7 @@ export default function Home() {
   const [loading, setLoading]   = useState(true)
   const [activeCat, setActiveCat] = useState('All')
   const location  = useLocation()
+  const navigate = useNavigate()
   const { location: appLocation } = useAppLocation()
   const searchQuery = new URLSearchParams(location.search).get('search') || ''
 
@@ -187,31 +189,34 @@ export default function Home() {
 
         {/* ── ZEPTO STYLE OFFER CARDS ── */}
         <div style={{ background: '#0f0c29', borderRadius: 24, padding: 24, marginBottom: 32, boxShadow: '0 12px 32px rgba(0,0,0,0.15)', border: '1px solid rgba(255,255,255,0.05)' }}>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap: 16 }}>
+          <div className="row g-3">
             {[
-              { icon:'⚡', title:'Flash deals', sub:'Upto 30% off', badge:'HOT', badgeColor:'#FF3333', bg:'linear-gradient(135deg, #FF512F 0%, #DD2476 100%)', glowColor:'rgba(221, 36, 118, 0.4)', iconGlow:'0 0 20px rgba(255, 255, 255, 0.5)' },
-              { icon:'🎒', title:'Student special', sub:'Under ₹30', badge:'NEW', badgeColor:'#00E676', bg:'linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%)', glowColor:'rgba(142, 45, 226, 0.4)', iconGlow:'0 0 20px rgba(255, 255, 255, 0.5)' },
-              { icon:'🍌', title:'Midnight snacks', sub:'Always available', badge:'', badgeColor:'', bg:'linear-gradient(135deg, #00C6FF 0%, #0072FF 100%)', glowColor:'rgba(0, 198, 255, 0.4)', iconGlow:'0 0 20px rgba(255, 255, 255, 0.5)' },
+              { id:'flash', icon:'⚡', title:'Flash deals', sub:'Upto 30% off', badge:'HOT', badgeColor:'#FF3333', bg:'linear-gradient(135deg, #FF512F 0%, #DD2476 100%)', glowColor:'rgba(221, 36, 118, 0.4)', iconGlow:'0 0 20px rgba(255, 255, 255, 0.5)' },
+              { id:'student', icon:'🎒', title:'Student special', sub:'Under ₹30', badge:'NEW', badgeColor:'#00E676', bg:'linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%)', glowColor:'rgba(142, 45, 226, 0.4)', iconGlow:'0 0 20px rgba(255, 255, 255, 0.5)' },
+              { id:'midnight', icon:'🍌', title:'Midnight snacks', sub:'Always available', badge:'', badgeColor:'', bg:'linear-gradient(135deg, #00C6FF 0%, #0072FF 100%)', glowColor:'rgba(0, 198, 255, 0.4)', iconGlow:'0 0 20px rgba(255, 255, 255, 0.5)' },
             ].map(o => (
-              <div key={o.title}
-                style={{ 
-                  background: o.bg, 
-                  borderRadius: 20, 
-                  padding: '22px 20px', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: 16, 
-                  cursor: 'pointer', 
-                  transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                  boxShadow: `0 8px 24px ${o.glowColor}, inset 0 1px 1px rgba(255,255,255,0.4), inset 0 0 0 1px rgba(255,255,255,0.1)`, 
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}
-                onMouseEnter={e => { e.currentTarget.style.transform='translateY(-6px)'; e.currentTarget.style.boxShadow=`0 16px 32px ${o.glowColor}, inset 0 1px 1px rgba(255,255,255,0.6), inset 0 0 0 1px rgba(255,255,255,0.2)` }}
-                onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow=`0 8px 24px ${o.glowColor}, inset 0 1px 1px rgba(255,255,255,0.4), inset 0 0 0 1px rgba(255,255,255,0.1)` }}>
-                
-                {/* Glassmorphism Shine Overlay */}
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%)', pointerEvents: 'none' }} />
+              <div key={o.title} className="col-12 col-md-4">
+                <div 
+                  onClick={() => navigate(`/deals?type=${o.id}`)}
+                  style={{ 
+                    background: o.bg, 
+                    borderRadius: 20, 
+                    padding: '22px 20px', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 16, 
+                    cursor: 'pointer', 
+                    transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                    boxShadow: `0 8px 24px ${o.glowColor}, inset 0 1px 1px rgba(255,255,255,0.4), inset 0 0 0 1px rgba(255,255,255,0.1)`, 
+                    position: 'relative',
+                    overflow: 'hidden',
+                    height: '100%'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform='translateY(-6px)'; e.currentTarget.style.boxShadow=`0 16px 32px ${o.glowColor}, inset 0 1px 1px rgba(255,255,255,0.6), inset 0 0 0 1px rgba(255,255,255,0.2)` }}
+                  onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow=`0 8px 24px ${o.glowColor}, inset 0 1px 1px rgba(255,255,255,0.4), inset 0 0 0 1px rgba(255,255,255,0.1)` }}>
+                  
+                  {/* Glassmorphism Shine Overlay */}
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%)', pointerEvents: 'none' }} />
 
                 {/* Glowing Icon Treatment */}
                 <div style={{ 
@@ -257,6 +262,7 @@ export default function Home() {
                   </div>
                 )}
               </div>
+            </div>
             ))}
           </div>
         </div>
