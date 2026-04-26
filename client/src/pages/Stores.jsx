@@ -3,13 +3,14 @@ import { FiSearch, FiMapPin, FiLoader, FiEdit3 } from 'react-icons/fi';
 import StoreCard from '../components/StoreCard';
 import StoreModal from '../components/StoreModal';
 import LocationEditModal from '../components/LocationEditModal';
-import { storesData } from '../data/storesData';
 import { useLocation } from '../context/LocationContext';
 import { useCart } from '../context/CartContext';
+import API from '../api';
 
 const Stores = () => {
   const { location: userLocation, detectLocation, loading: locLoading } = useLocation();
   const { addToCart } = useCart();
+  const [storesData, setStoresData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -17,10 +18,17 @@ const Stores = () => {
   const [isLocModalOpen, setIsLocModalOpen] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
-    return () => clearTimeout(timer);
+    const fetchStores = async () => {
+      try {
+        const { data } = await API.get('/seller/stores');
+        setStoresData(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchStores();
   }, []);
 
   const handleUseLocation = async () => {

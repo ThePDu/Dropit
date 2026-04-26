@@ -11,10 +11,15 @@ const EMO = { snacks:'🍟', drinks:'🧃', instant:'🍜', dairy:'🥛', statio
 const STEPS = ['Placed', 'Confirmed', 'Out for Delivery', 'Delivered']
 const STATUS_MAP = {
   'Pending':           0,
+  'accepted':          1,
   'Confirmed':         1,
+  'preparing':         1,
   'Out for Delivery':  2,
+  'out_for_delivery':  2,
   'Delivered':         3,
+  'delivered':         3,
   'Cancelled':        -1,
+  'rejected':         -1,
 }
 const STEP_ICONS  = ['📋', '📦', '🛵', '🎉']
 const STEP_LABELS = ['Order Placed', 'Packed & Ready', 'Out for Delivery', 'Delivered!']
@@ -25,17 +30,26 @@ function LiveOrderTracker({ order, payMethod }) {
   const { joinOrderRoom, onOrderStatusUpdate } = useSocket()
   const [currentStatus, setCurrentStatus] = useState(order.orderStatus || 'Pending')
   const [pulse, setPulse] = useState(false)
+  const [storeToast, setStoreToast] = useState('')
 
   useEffect(() => {
     // Join the WebSocket room for this order
     joinOrderRoom(order._id)
 
     // Listen for live status pushes from the server
-    const unsub = onOrderStatusUpdate(({ orderId, orderStatus }) => {
+    const unsub = onOrderStatusUpdate(({ orderId, orderStatus, storeName, message }) => {
       if (orderId === order._id || orderId?.toString() === order._id?.toString()) {
         setCurrentStatus(orderStatus)
         setPulse(true)
         setTimeout(() => setPulse(false), 800)
+        if (storeName) {
+          setStoreToast(`🎉 ${storeName} accepted your order!`)
+          setTimeout(() => setStoreToast(''), 4000)
+        }
+        if (message && !storeName) {
+          setStoreToast(message)
+          setTimeout(() => setStoreToast(''), 4000)
+        }
       }
     })
     return unsub
@@ -43,19 +57,30 @@ function LiveOrderTracker({ order, payMethod }) {
 
   const stepIdx  = STATUS_MAP[currentStatus] ?? 0
   const progress = currentStatus === 'Cancelled' ? 0 : Math.max(10, (stepIdx / (STEPS.length - 1)) * 100)
-  const cancelled = currentStatus === 'Cancelled'
+  const cancelled = ['Cancelled','rejected'].includes(currentStatus)
 
   const statusColors = {
-    Delivered:        { bg: '#f0fff4', border: '#0c831f', text: '#0c831f' },
+    Delivered:          { bg: '#f0fff4', border: '#0c831f', text: '#0c831f' },
+    delivered:          { bg: '#f0fff4', border: '#0c831f', text: '#0c831f' },
     'Out for Delivery': { bg: '#e8f0fe', border: '#2979ff', text: '#2979ff' },
-    Confirmed:        { bg: '#fff9e6', border: '#f5a623', text: '#f5a623' },
-    Cancelled:        { bg: '#fff1f0', border: '#e23744', text: '#e23744' },
-    Pending:          { bg: '#f0fff4', border: '#0c831f', text: '#0c831f' },
+    out_for_delivery:   { bg: '#e8f0fe', border: '#2979ff', text: '#2979ff' },
+    Confirmed:          { bg: '#fff9e6', border: '#f5a623', text: '#f5a623' },
+    accepted:           { bg: '#fff9e6', border: '#f5a623', text: '#f5a623' },
+    preparing:          { bg: '#e8f0fe', border: '#2979ff', text: '#2979ff' },
+    Cancelled:          { bg: '#fff1f0', border: '#e23744', text: '#e23744' },
+    rejected:           { bg: '#fff1f0', border: '#e23744', text: '#e23744' },
+    Pending:            { bg: '#f0fff4', border: '#0c831f', text: '#0c831f' },
   }
   const col = statusColors[currentStatus] || statusColors.Pending
 
   return (
     <div style={{ minHeight:'calc(100vh - 64px)', display:'flex', alignItems:'center', justifyContent:'center', padding:20, background:'#f8f8f8' }}>
+      {/* Store accepted toast */}
+      {storeToast && (
+        <div style={{ position:'fixed', top:20, left:'50%', transform:'translateX(-50%)', background:'#10B981', color:'#fff', padding:'14px 24px', borderRadius:14, fontSize:15, fontWeight:700, boxShadow:'0 8px 32px rgba(16,185,129,0.3)', zIndex:9999, whiteSpace:'nowrap' }}>
+          {storeToast}
+        </div>
+      )}
       <div style={{ background:'#fff', border:'1px solid #e0e0e0', borderRadius:24, padding:'36px 32px', maxWidth:480, width:'100%', boxShadow:'0 8px 32px rgba(0,0,0,0.08)' }}>
 
         {/* Header */}
@@ -157,7 +182,19 @@ export default function Cart() {
   const [payMethod, setPay] = useState('COD')
   const [loading, setLoading] = useState(false)
   const [placed, setPlaced]   = useState(null)
+  const [userGeo, setUserGeo] = useState(null)
   const navigate = useNavigate()
+
+  // Try to grab GPS coords silently
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        pos => setUserGeo({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        ()  => setUserGeo(null),
+        { timeout: 5000 }
+      )
+    }
+  }, [])
 
   useEffect(() => {
     if (user) {
@@ -186,6 +223,8 @@ export default function Cart() {
     try {
       const { data } = await API.post('/orders', {
         ...form,
+        storeId: cart[0]?.storeId,
+        userLocation: userGeo ? { lat: userGeo.lat, lng: userGeo.lng, address: form.hostelRoom } : {},
         items: cart.map(i => ({ productId: i._id, name: i.name, price: i.price, qty: i.qty, image: i.image, category: i.category })),
         subtotal: cartTotal, deliveryFee, totalAmount, paymentMethod: payMethod,
       })

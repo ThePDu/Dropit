@@ -31,4 +31,58 @@ router.post('/login', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+router.get('/stores', async (req, res) => {
+  try {
+    const stores = await Store.find().lean();
+    const Product = require('../models/Product');
+    const products = await Product.find({ isActive: true }).lean();
+    
+    // Attach products to their respective stores
+    const storesWithProducts = stores.map(store => {
+      return {
+        id: store._id,
+        name: store.name,
+        area: store.ownerName || 'Local Area',
+        phone: store.phone,
+        email: store.email,
+        isOpen: true,
+        distance: 'Nearby',
+        tags: ['Fast Delivery'],
+        featured: true,
+        image: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=400&q=80',
+        products: products.filter(p => p.storeId?.toString() === store._id.toString()).map(p => ({
+          ...p,
+          id: p._id,
+          inStock: p.stock > 0
+        }))
+      };
+    });
+    
+    res.json(storesWithProducts);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ── PATCH /seller/location ─ Update store GPS coords ──────────────────────
+router.patch('/location', async (req, res) => {
+  try {
+    const { lat, lng } = req.body;
+    if (!lat || !lng) return res.status(400).json({ error: 'lat and lng required' });
+
+    // Identify seller from JWT
+    const jwt = require('jsonwebtoken');
+    const auth = req.headers.authorization?.split(' ')[1];
+    if (!auth) return res.status(401).json({ error: 'Not authorized' });
+
+    const decoded = jwt.verify(auth, process.env.JWT_SECRET);
+    const store = await Store.findByIdAndUpdate(
+      decoded.id,
+      { lat: parseFloat(lat), lng: parseFloat(lng) },
+      { new: true }
+    );
+    if (!store) return res.status(404).json({ error: 'Store not found' });
+    res.json({ message: 'Location updated', lat: store.lat, lng: store.lng });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 module.exports = router;
+

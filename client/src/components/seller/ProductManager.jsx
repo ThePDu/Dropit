@@ -48,67 +48,67 @@ export default function ProductManager({ storeId }) {
   };
 
   return (
-    <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h4>Products</h4>
-        <button className="btn fw-bold text-white" style={{ backgroundColor: '#f59e0b' }} onClick={() => setShowAddForm(!showAddForm)}>
+    <div style={{ width: '100%' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+        <h4 style={{ margin: 0, fontWeight: 900, color: '#111827', fontSize: 24, letterSpacing: '-0.5px' }}>Product Catalog</h4>
+        <button onClick={() => setShowAddForm(!showAddForm)} style={{ background: '#F5A623', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 10, fontSize: 14, fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 12px rgba(245,166,35,0.3)', transition: 'all 0.2s' }} onMouseEnter={e=>e.currentTarget.style.transform='translateY(-2px)'} onMouseLeave={e=>e.currentTarget.style.transform='translateY(0)'}>
           {showAddForm ? 'Cancel' : '+ Add Product'}
         </button>
       </div>
 
       {showAddForm && (
-        <div className="card shadow-sm border-0 mb-4">
-          <div className="card-body">
-            <h5 className="mb-3 fw-bold">Add New Product</h5>
-            <form onSubmit={handleAddProduct}>
-              <div className="row g-3">
-                <div className="col-md-6">
-                  <label className="form-label">Name</label>
-                  <input required className="form-control" value={form.name} onChange={e=>setForm({...form, name: e.target.value})} />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label">Category</label>
-                  <input required className="form-control" value={form.category} onChange={e=>setForm({...form, category: e.target.value})} />
-                </div>
-                <div className="col-md-4">
-                  <label className="form-label">Price (₹)</label>
-                  <input required type="number" className="form-control" value={form.price} onChange={e=>setForm({...form, price: e.target.value})} />
-                </div>
-                <div className="col-md-4">
-                  <label className="form-label">Stock</label>
-                  <input required type="number" className="form-control" value={form.stock} onChange={e=>setForm({...form, stock: e.target.value})} />
-                </div>
-                <div className="col-md-4">
-                  <label className="form-label">Image URL</label>
-                  <input className="form-control" value={form.image} onChange={e=>setForm({...form, image: e.target.value})} />
-                </div>
-              </div>
-              <button type="submit" className="btn btn-dark mt-3 px-4">Save Product</button>
-            </form>
-          </div>
+        <div style={{ background: '#fff', borderRadius: 20, padding: 28, marginBottom: 32, boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #F3F4F6' }}>
+          <h5 style={{ margin: '0 0 20px 0', fontWeight: 800, color: '#111827', fontSize: 18 }}>Add New Product</h5>
+          <form onSubmit={handleAddProduct} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+            <div>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 800, color: '#6B7280', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Name</label>
+              <input required style={{ width: '100%', padding: '12px 16px', background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, outline: 'none', transition: 'all 0.2s', fontWeight: 600, boxSizing: 'border-box' }} onFocus={e=>{e.target.style.borderColor='#F5A623';e.target.style.background='#fff'}} onBlur={e=>{e.target.style.borderColor='#E5E7EB';e.target.style.background='#F9FAFB'}} value={form.name} onChange={e=>setForm({...form, name: e.target.value})} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 800, color: '#6B7280', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Category</label>
+              <input required style={{ width: '100%', padding: '12px 16px', background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, outline: 'none', transition: 'all 0.2s', fontWeight: 600, boxSizing: 'border-box' }} onFocus={e=>{e.target.style.borderColor='#F5A623';e.target.style.background='#fff'}} onBlur={e=>{e.target.style.borderColor='#E5E7EB';e.target.style.background='#F9FAFB'}} value={form.category} onChange={e=>setForm({...form, category: e.target.value})} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 800, color: '#6B7280', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Price (₹)</label>
+              <input required type="number" style={{ width: '100%', padding: '12px 16px', background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, outline: 'none', transition: 'all 0.2s', fontWeight: 600, boxSizing: 'border-box' }} onFocus={e=>{e.target.style.borderColor='#F5A623';e.target.style.background='#fff'}} onBlur={e=>{e.target.style.borderColor='#E5E7EB';e.target.style.background='#F9FAFB'}} value={form.price} onChange={e=>setForm({...form, price: e.target.value})} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 800, color: '#6B7280', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Stock</label>
+              <input required type="number" style={{ width: '100%', padding: '12px 16px', background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, outline: 'none', transition: 'all 0.2s', fontWeight: 600, boxSizing: 'border-box' }} onFocus={e=>{e.target.style.borderColor='#F5A623';e.target.style.background='#fff'}} onBlur={e=>{e.target.style.borderColor='#E5E7EB';e.target.style.background='#F9FAFB'}} value={form.stock} onChange={e=>setForm({...form, stock: e.target.value})} />
+            </div>
+            <div style={{ gridColumn: '1 / -1' }}>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 800, color: '#6B7280', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Image URL</label>
+              <input style={{ width: '100%', padding: '12px 16px', background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, outline: 'none', transition: 'all 0.2s', fontWeight: 600, boxSizing: 'border-box' }} onFocus={e=>{e.target.style.borderColor='#F5A623';e.target.style.background='#fff'}} onBlur={e=>{e.target.style.borderColor='#E5E7EB';e.target.style.background='#F9FAFB'}} value={form.image} onChange={e=>setForm({...form, image: e.target.value})} />
+            </div>
+            <div style={{ gridColumn: '1 / -1', marginTop: 8 }}>
+              <button type="submit" style={{ background: '#111827', color: '#fff', border: 'none', padding: '14px 28px', borderRadius: 10, fontSize: 15, fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s' }} onMouseEnter={e=>e.currentTarget.style.background='#374151'} onMouseLeave={e=>e.currentTarget.style.background='#111827'}>Save Product</button>
+            </div>
+          </form>
         </div>
       )}
 
       {loading ? (
-        <div>Loading products...</div>
+        <div style={{ padding: 40, textAlign: 'center', color: '#6B7280', fontWeight: 600 }}>Loading products...</div>
       ) : products.length === 0 ? (
-        <div className="text-center p-5 text-muted bg-white shadow-sm rounded">
-          <i className="bi bi-box fs-1"></i>
-          <p className="mt-2 mb-0">No products yet. Add your first product!</p>
+        <div style={{ textAlign: 'center', padding: '60px 20px', background: '#fff', borderRadius: 24, border: '1px dashed #D1D5DB' }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>📦</div>
+          <h3 style={{ margin: '0 0 8px 0', color: '#111827', fontWeight: 800 }}>No products yet</h3>
+          <p style={{ margin: 0, color: '#6B7280' }}>Add your first product to start selling locally.</p>
         </div>
       ) : (
-        <div className="row g-3">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 24 }}>
           {products.map(p => (
-            <div key={p._id} className="col-md-4 col-sm-6">
-              <div className="card shadow-sm border-0 h-100">
-                {p.image && <img src={p.image} className="card-img-top" alt={p.name} style={{ height: '150px', objectFit: 'contain', padding: '10px' }} />}
-                <div className="card-body d-flex flex-column">
-                  <h6 className="fw-bold mb-1">{p.name}</h6>
-                  <p className="text-muted small mb-2">{p.category} | Stock: {p.stock}</p>
-                  <div className="d-flex justify-content-between align-items-center mt-auto">
-                    <span className="fw-bold fs-5 text-success">₹{p.price}</span>
-                    <button onClick={() => handleDelete(p._id)} className="btn btn-sm btn-outline-danger">Delete</button>
-                  </div>
+            <div key={p._id} style={{ background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #F3F4F6', display: 'flex', flexDirection: 'column', transition: 'transform 0.2s' }} onMouseEnter={e=>e.currentTarget.style.transform='translateY(-4px)'} onMouseLeave={e=>e.currentTarget.style.transform='translateY(0)'}>
+              <div style={{ height: 160, background: '#F9FAFB', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+                {p.image ? <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} /> : <span style={{ fontSize: 48 }}>📦</span>}
+              </div>
+              <div style={{ padding: 20, display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                <h6 style={{ margin: '0 0 8px 0', fontSize: 16, fontWeight: 800, color: '#111827' }}>{p.name}</h6>
+                <p style={{ margin: '0 0 16px 0', fontSize: 13, color: '#6B7280', fontWeight: 500 }}>{p.category} • Stock: {p.stock}</p>
+                
+                <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 16, borderTop: '1px solid #F3F4F6' }}>
+                  <span style={{ fontSize: 18, fontWeight: 900, color: '#059669' }}>₹{p.price}</span>
+                  <button onClick={() => handleDelete(p._id)} style={{ background: 'transparent', color: '#EF4444', border: '1px solid rgba(239,68,68,0.2)', padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }} onMouseEnter={e=>e.currentTarget.style.background='rgba(239,68,68,0.1)'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Delete</button>
                 </div>
               </div>
             </div>

@@ -34,9 +34,19 @@ app.use('/api/seller',   require('./routes/sellerAuth'));
 app.get('/', (req, res) => res.json({ message: '🛵 DropIt API Running!' }));
 
 io.on('connection', (socket) => {
-  // Client joins a room keyed by orderId so only they get updates
+  // Customer joins a room for their order's live status
   socket.on('join_order', (orderId) => {
     socket.join(`order_${orderId}`);
+  });
+
+  // Seller joins their store room to receive new order pings
+  socket.on('join_store', (storeId) => {
+    socket.join(`store_${storeId}`);
+  });
+
+  // Seller leaves store room (logout / browser close)
+  socket.on('leave_store', (storeId) => {
+    socket.leave(`store_${storeId}`);
   });
 
   socket.on('disconnect', () => {});
