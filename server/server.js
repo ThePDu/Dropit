@@ -53,4 +53,15 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 5000;
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\n❌ Port ${PORT} is already in use.`);
+    console.error(`   Run this to free it:  npx kill-port ${PORT}\n`);
+    process.exit(1);
+  } else {
+    throw err;
+  }
+});
+
 server.listen(PORT, () => console.log(`\n🛵 Server running on http://localhost:${PORT} (Socket.IO enabled)\n`));
