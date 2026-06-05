@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
-const Product = require('./models/Product');
-require('dotenv').config();
+const path = require('path');
+const Product = require('../models/Product');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
-const MONGO_URI = "mongodb://localhost:27017/dropit";
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/dropit";
 
 async function fixImages() {
   try {

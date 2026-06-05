@@ -1,9 +1,12 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 const mongoose = require('mongoose');
-const User = require('./models/User');
+const User = require('../models/User');
+
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/dropit";
 
 async function updateAdmin() {
-  await mongoose.connect(process.env.MONGO_URI);
+  await mongoose.connect(MONGO_URI);
   
   // Remove old admin
   await User.deleteOne({ email: 'admin@dropit.com' });

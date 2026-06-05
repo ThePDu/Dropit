@@ -1,13 +1,13 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 const mongoose = require('mongoose');
-const Product  = require('./models/Product');
-const User     = require('./models/User');
+const Product  = require('../models/Product');
+const User     = require('../models/User');
 const https    = require('https');
 const http     = require('http');
 const fs       = require('fs');
-const path     = require('path');
 
-const uploadDir = path.join(__dirname, 'uploads');
+const uploadDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 // Properly follow redirects up to 10 times
@@ -108,7 +108,7 @@ const productData = [
   // ── STATIONERY ──
   { name:'Reynolds Blue Pen',         price:10,  mrp:10,  category:'stationery', description:'Pack of 1 · Smooth ballpoint',       stock:150, badge:'',           img:'pen.jpg',           url:'https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=300&h=300&fit=crop' },
   { name:'Classmate Notebook 200pg',  price:45,  mrp:50,  category:'stationery', description:'200 pages · Ruled A4 notebook',      stock:60,  badge:'new',        img:'notebook.jpg',      url:'https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=300&h=300&fit=crop' },
-  { name:'Apsara Pencil HB 10pc',     price:30,  mrp:35,  category:'stationery', description:'Pack of 10 · HB pencils',            stock:100, badge:'',           img:'pencil.jpg',        url:'https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=300&h=300&fit=crop' },
+  { name:'Apsara Pencil HB 10pc',     price:30,  mrp:35,  category:'stationery', description:'Pack of 10 · HB pencils',            stock:100, badge:'',           img:'pencil.jpg',        url:'https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?w=300&h=300&fit=crop' },
   { name:'Highlighter Set 4 Colors',  price:80,  mrp:95,  category:'stationery', description:'Pack of 4 · Pastel highlighters',    stock:50,  badge:'new',        img:'highlighter.jpg',   url:'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=300&h=300&fit=crop' },
   { name:'Flair Ball Pen 5pc',        price:40,  mrp:45,  category:'stationery', description:'Pack of 5 · Multicolor pens',        stock:70,  badge:'',           img:'flairpen.jpg',      url:'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&h=300&fit=crop' },
 
@@ -137,18 +137,22 @@ const productData = [
 ];
 
 async function seed() {
-  await mongoose.connect(process.env.MONGO_URI);
+  const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/dropit";
+  console.log(`Connecting to MongoDB at: ${MONGO_URI}`);
+  await mongoose.connect(MONGO_URI);
   console.log('\n🗑️  Deleting old bad images...');
 
   // Delete all old 567-byte broken files
-  const files = fs.readdirSync(uploadDir);
-  let deleted = 0;
-  for (const f of files) {
-    const fp = path.join(uploadDir, f);
-    const size = fs.statSync(fp).size;
-    if (size < 5000 && f !== '.gitkeep') { fs.unlinkSync(fp); deleted++; }
+  if (fs.existsSync(uploadDir)) {
+    const files = fs.readdirSync(uploadDir);
+    let deleted = 0;
+    for (const f of files) {
+      const fp = path.join(uploadDir, f);
+      const size = fs.statSync(fp).size;
+      if (size < 5000 && f !== '.gitkeep') { fs.unlinkSync(fp); deleted++; }
+    }
+    console.log(`✅ Deleted ${deleted} broken files\n`);
   }
-  console.log(`✅ Deleted ${deleted} broken files\n`);
   console.log('📥 Downloading real images...\n');
 
   const products = [];

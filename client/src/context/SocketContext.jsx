@@ -11,7 +11,8 @@ export function SocketProvider({ children }) {
     // Create socket once — use singleton pattern safe for StrictMode
     if (socketRef.current?.connected) return;
 
-    const socket = io('http://localhost:5000', {
+    const socketUrl = import.meta.env.VITE_SOCKET_URL || (window.location.hostname === 'localhost' ? 'http://localhost:5000' : window.location.origin)
+    const socket = io(socketUrl, {
       transports: ['websocket', 'polling'],
       reconnectionAttempts: 10,
       reconnectionDelay: 1000,
